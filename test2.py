@@ -1,6 +1,8 @@
 import time
 import fluidsynth
 
+#adding a comment
+
 fs = fluidsynth.Synth()
 fs.start()
 

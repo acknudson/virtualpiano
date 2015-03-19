@@ -1,0 +1,23 @@
+Useful links and documentation:
+
+FLUIDSYNTH:
+http://sourceforge.net/p/fluidsynth/wiki/Documentation/
+https://github.com/MostAwesomeDude/pyfluidsynth
+https://code.google.com/p/pygalaxy/wiki/pyFluidSynth
+
+LEAP:
+https://developer.leapmotion.com/documentation/python/index.html
+
+GIT:
+git pull upstream
+git status
+git add —- all (you or an add each file by name individually)
+git commit -m “message here”
+git push origin (pushes to your fork)
+git push upstream (pushes to me)
+
+
+
+
+OTHER:
+Make a dictionary of all the note names and numbers?

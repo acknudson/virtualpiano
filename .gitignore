@@ -11,6 +11,7 @@ env/
 build/
 develop-eggs/
 dist/
+DesignStudioFiles/
 downloads/
 eggs/
 lib/
@@ -51,4 +52,6 @@ coverage.xml
 docs/_build/
 
 # PyBuilder
+DesignStudioFiles/
+.DS_Store
 target/

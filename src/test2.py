@@ -37,6 +37,7 @@ seq = (79, 78, 79, 74, 79, 69, 79, 67, 79, 72, 79, 76,
 scale = (60, 62, 64, 65, 67, 69, 71, 72)
 
 for i in scale:
+    print i
     fs.noteon(0, i, 127)
     time.sleep(0.5)
     fs.noteoff(0, i)

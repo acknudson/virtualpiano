@@ -46,14 +46,20 @@ screen = pygame.display.set_mode((200, 200))
 
 def main():
 
-    # Keep this process running until Enter is pressed
-    print "Press Enter to quit..."
-
     pygame.display.set_caption("LeaPiano")
 
     background = pygame.Surface(screen.get_size())
     background = background.convert()
     background.fill((255,255,255))
+    
+
+    RED   = (255,   0,   0)
+    pygame.draw.line(background, RED, (10,100), (190, 100))
+    pygame.draw.circle(background, RED, (70,80), 2)
+    pygame.draw.circle(background, RED, (85,80), 2)
+    pygame.draw.circle(background, RED, (100,80), 2)
+    pygame.draw.circle(background, RED, (115,80), 2)
+    pygame.draw.circle(background, RED, (130,80), 2)
     screen.blit(background, (0,0))
 
     playing = True
@@ -67,9 +73,6 @@ def main():
                 if event.type == pygame.QUIT:
                    playing = False
             pygame.display.flip()
-            sys.stdin.readline()
-    except KeyboardInterrupt:
-        pass
     finally:
         pygame.quit()
 ##    pygame.quit()

@@ -35,7 +35,9 @@ class Sound():
                 }
 
     
-
+    # noteName is the string letter value of a note (s is concatenated for a sharp/black key)
+    # octave is an integer ranging from 0 to 8
+    # volume is an integer ranging from 0 to ???
     def playNote(self, noteName, octave, volume=100):
         note = self.noteDict[noteName][octave]
         fs.noteon(0, note, volume)

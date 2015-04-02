@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
 import Leap
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 import time
-import fluidsynth
+#import fluidsynth
 import sound
 import pygame
 
@@ -108,25 +108,39 @@ class SampleListener(Leap.Listener):
                 if state == Leap.Gesture.STATE_INVALID:
                         return "STATE_INVALID"
 
-pygame.init()
-screen = pygame.display.set_mode((200, 200))
-
-
 def main():
         # Create a sample listener and controller
-        listener = SampleListener()
+        #listener = SampleListener()
         controller = Leap.Controller()
 
+        '''
+        From Jeremy 4/1:
+        try doing it without a listener. instead of this main loop,
+        run the main loop from the GUI (the infinte loop for the "game" from
+        pygame). inside of that loop, pull the Leap Controller. just call 
+        controller.frame() w/o any history input, and it will give you the latest frame.
+        '''
+
         # Have the sample listener receive events from the controller
-        controller.add_listener(listener)
+        #controller.add_listener(listener)
 
         #screen init code
-        pygame.display.set_caption("LeaPiano")
+        # pygame.init()
+        # screen = pygame.display.set_mode((200, 200))
+        # pygame.display.set_caption("LeaPiano")
 
-        background = pygame.Surface(screen.get_size())
-        background = background.convert()
-        background.fill((255,255,255))
-        screen.blit(background, (0,0))
+        # background = pygame.Surface(screen.get_size())
+        # background = background.convert()
+        # background.fill((255,255,255))
+        # RED   = (255,   0,   0)
+        # pygame.draw.line(background, RED, (10,100), (190, 100))
+        # pygame.draw.circle(background, RED, (70,80), 2)
+        # pygame.draw.circle(background, RED, (85,80), 2)
+        # pygame.draw.circle(background, RED, (100,80), 2)
+        # pygame.draw.circle(background, RED, (115,80), 2)
+        # pygame.draw.circle(background, RED, (130,80), 2)
+        # screen.blit(background, (0,0))
+        # pygame.display.update() #this is crucial -- writes the values to the screen
 
         playing = True
 
@@ -134,14 +148,14 @@ def main():
         print "Press Enter to quit..."
         try:
                 print "Trying"
-                while playing:
-                        sys.stdin.readline()
+                # while playing:
+                sys.stdin.readline()
                         # background = 0,0,0
                         # foreground = 255,255,255
                         # font = pygame.font.Font(None, 80)
                         # ren = font.render(self.finger_names[finger.type()], 0, background, foreground)
                         # pygame.screen.blit(ren, (10,10))
-                        pygame.display.flip()
+                        #pygame.display.flip()
 
         except KeyboardInterrupt:
                 print "Enter was pressed."
@@ -153,5 +167,5 @@ def main():
                 pygame.quit()
 
 
-if __name__ == "__main__":
-                main()
+# if __name__ == "__main__":
+#                 main()

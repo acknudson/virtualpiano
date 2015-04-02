@@ -1,43 +1,33 @@
-#main loop
-#include necessary imports
-import sound
-import gui
-import gestures
+import pygame
+from pygame.locals import QUIT, KEYDOWN, K_RETURN
+import os, sys, inspect, thread, time
 
-#global variables
-# threshold
-# noteCutoffs (the x range (and later z range) in space for each note)
+
+import gestures
+import gui
+
 
 def main():
-    # setup the controller
-    controller = Leap.Controller()
 
+    g = gestures.Gestures()
     # create a blank screen
-    screen.blit(background, (0,0))
-    pygame.display.update() #this is crucial -- writes the values to the screen
+    gui.init()
 
-    playing = True
-    controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP)
-    while playing:
-        background.fill(WHITE)
+
+    running = True
+    while running:
         #get the current Leap frame
-        frame = controller.frame()
-        [] = leapControl(frame)
-        
-
+        play = g.leapControl()
+        gui.update(play)
+        #sound.noteStruck()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-               playing = False
+               running = False
             # quit if Enter is pressed
             elif event.type == KEYDOWN and event.key == K_RETURN:
-                playing = False
-
-        # screen.blit(background, (0,0)) #erase screen (return to basic background)
-        pygame.display.update() #redraw with new updates
-
+                running = False
     pygame.quit()
-    sys.exit()
-    
+    sys.exit()    
 
 if __name__ == "__main__":
     main()

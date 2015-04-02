@@ -57,6 +57,8 @@ class SampleListener(Leap.Listener):
 			# print "  %s, id %d, position: %s" % (
 			#     handType, hand.id, hand.palm_position)
 
+
+
 			# Get fingers
 			for finger in hand.fingers:
 
@@ -85,6 +87,8 @@ class SampleListener(Leap.Listener):
 					if play[finger.type()] == True:
 						fs.noteoff(0, scale[finger.type()])
 						play[finger.type()] = False
+
+
 
 
 	def state_string(self, state):

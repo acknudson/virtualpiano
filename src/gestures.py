@@ -1,4 +1,3 @@
-import sound
 import os, sys, inspect, thread, time
 src_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
 arch_dir = '../lib/'
@@ -6,18 +5,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
 import Leap
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
-
-# initialize necessary sounds/scale
-scale = ('C', 'D', 'E', 'F', 'G', 'A', 'B', 'C')
-play = [False, False, False, False, False]
-snd = sound.Sound()
-
 class Gestures():
 
 
     def __init__(self):
         # setup the controller
         self.controller = Leap.Controller()
+        self.position = Position()
 
     # A function that deals with all of the leap finger tracking, and what to do
     # when a finger has moved, including updating the GUI and playing a sound.
@@ -29,23 +23,49 @@ class Gestures():
 
         frame = self.controller.frame()
         for hand in frame.hands:
-            handType = "Left hand" if hand.is_left else "Right hand"
+            handType = "LEFT" if hand.is_left else "RIGHT"
 
             # Get fingers
             for finger in hand.fingers:
                 bone = finger.bone(3)
-                if bone.next_joint[1] < 90:
-                        print finger_names[finger.type()]
-                        if play[finger.type()] == False:
-                                play[finger.type()] = True
-                                #fs.noteon(0, scale[finger.type()], 127)
-                                snd.playNote(scale[finger.type()], 4)
-                else:
-                        if play[finger.type()] == True:
-                                #fs.noteoff(0, scale[finger.type()])
-                                snd.noteOff(scale[finger.type()], 4)
-                                play[finger.type()] = False
+  
+                x = bone.next_joint[0]
+                y = bone.next_joint[1]
+                z = bone.next_joint[2]
+                self.position.update(handType, finger.type(), x,y,z)
 
-        return play
+
+class Position():
+
+    def __init__(self):
+        #position of fingers in each hand
+        #[thumb, index, middle, ring, pinky]
+        self.left = [Finger(0),Finger(1),Finger(2),Finger(3),Finger(4)]
+        self.right = [Finger(0),Finger(1),Finger(2),Finger(3),Finger(4)]
+
+    #hand is a string, "LEFT" or "RIGHT"
+    #finger index in an interger, ranging from 0 to 4
+    def update(self, hand, finger_index, x, y, z):
+        if hand == "LEFT":
+            self.left[finger_index].x = x
+            self.left[finger_index].y = y
+            self.left[finger_index].z = z
+        if hand == "RIGHT":
+            self.right[finger_index].x = x
+            self.right[finger_index].y = y
+            self.right[finger_index].z = z
+
+class Finger():
+
+    finger_types = ["Thumb", "Index", "Middle", "Ring", "Pinky"]
+
+    def __init__(self, i):
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self.index = i
+        self.type = self.finger_types[i]
+        self.notePlaying = None #note is a tuple of (NoteName, Octave)
+
 
 

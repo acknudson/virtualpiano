@@ -34,17 +34,36 @@ class Sound():
                 'Gs': [0, 32, 44, 56, 68, 80, 92, 104]
                 }
 
+    #dictionary that tells us whether a note is currently playing
+    notePlaying = {'A':  [False, False, False, False, False, False, False, False],
+            'As': [False, False, False, False, False, False, False, False],
+            'B':  [False, False, False, False, False, False, False, False],
+            'C':  [False, False, False, False, False, False, False, False],
+            'Cs': [False, False, False, False, False, False, False, False],
+            'D':  [False, False, False, False, False, False, False, False],
+            'Ds': [False, False, False, False, False, False, False, False],
+            'E':  [False, False, False, False, False, False, False, False],
+            'F':  [False, False, False, False, False, False, False, False],
+            'Fs': [False, False, False, False, False, False, False, False],
+            'G':  [False, False, False, False, False, False, False, False],
+            'Gs': [False, False, False, False, False, False, False, False]
+            }
+
     
     # noteName is the string letter value of a note (s is concatenated for a sharp/black key)
     # octave is an integer ranging from 0 to 8
     # volume is an integer ranging from 0 to ???
     def playNote(self, noteName, octave, volume=100):
-        note = self.noteDict[noteName][octave]
-        fs.noteon(0, note, volume)
+        if not self.notePlaying[noteName][octave]:
+            note = self.noteDict[noteName][octave]
+            fs.noteon(0, note, volume)
+            self.notePlaying[noteName][octave] = True
 
     def noteOff(self, noteName, octave):
-        note = self.noteDict[noteName][octave]
-        fs.noteoff(0, note)
+        if self.notePlaying[noteName][octave]:
+            note = self.noteDict[noteName][octave]
+            fs.noteoff(0, note)
+            self.notePlaying[noteName][octave] = False
 
 #Testing method
 def testSound():

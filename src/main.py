@@ -5,7 +5,12 @@ import os, sys, inspect, thread, time
 
 import gestures
 import gui
+import Processing as p
 
+#thresholds for determining whether a note was played
+vertical_threshold = 90
+#min x = -150, max x = 150
+note_threshold = 20
 
 def main():
 
@@ -17,7 +22,8 @@ def main():
     running = True
     while running:
         #get the current Leap frame
-        play = g.leapControl()
+        g.leapControl()
+        play = p.position_to_note_played(g.position)
         gui.update(play)
         #sound.noteStruck()
         for event in pygame.event.get():

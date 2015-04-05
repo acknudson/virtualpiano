@@ -2,7 +2,7 @@ import sound
 
 # initialize necessary sounds/scale
 scale = ('C', 'D', 'E', 'F', 'G', 'A', 'B', 'C')
-play = [False, False, False, False, False]
+play = [False, False, False, False, False, False, False, False, False, False]
 snd = sound.Sound()
 
 V_THRESH = 90
@@ -41,8 +41,6 @@ def position_to_note_played(pos):
 				stopPlaying(finger)
 		else:
 			stopPlaying(finger)
-
-	return play
 
 def startPlaying(finger, note):
 	if finger.notePlaying != None and note != finger.notePlaying:

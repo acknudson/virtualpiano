@@ -16,15 +16,15 @@ def main():
 
     g = gestures.Gestures()
     # create a blank screen
-    gui.init()
+    #gui.init()
 
 
     running = True
     while running:
         #get the current Leap frame
         g.leapControl()
-        play = p.position_to_note_played(g.position)
-        gui.update(play)
+        p.position_to_note_played(g.position)
+        gui.update(g.position)
         #sound.noteStruck()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

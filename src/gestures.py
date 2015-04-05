@@ -44,7 +44,7 @@ class Position():
         self.right = [Finger(0),Finger(1),Finger(2),Finger(3),Finger(4)]
 
     #hand is a string, "LEFT" or "RIGHT"
-    #finger index in an interger, ranging from 0 to 4
+    #finger index in an integer, ranging from 0 to 4
     def update(self, hand, finger_index, x, y, z):
         if hand == "LEFT":
             self.left[finger_index].x = x

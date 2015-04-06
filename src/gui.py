@@ -1,5 +1,11 @@
 import pygame
+import config
 
+
+V_THRESH = config.V_THRESH
+NOTE_WIDTH = config.NOTE_WIDTH
+X_MIN = config.X_MIN
+X_MAX = config.X_MAX
 #Need to add something that will eventually highlight the keys when they are played
 
 class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite class for better rendering? 
@@ -29,13 +35,22 @@ BLACK = (0,     0,   0)
 #coordinates of each of the dots on the screen, in order from thumb to pinky
 #fingerDots = [(70,80), (85,80), (100,80), (115,80), (130,80)]
 
+def drawPiano():
+	#draw piano line
+	pygame.draw.line(screen, RED, (10,screenY-V_THRESH), (screenSize[0]-10, screenY-V_THRESH))
+	pygame.draw.line(screen, RED, (screenCenterX,screenY-V_THRESH), (screenCenterX, screenY-V_THRESH+30))
+	#add vertical lines for the keys
+	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
+	for i in note_cutoffs:
+		pygame.draw.line(screen, RED, (screenCenterX+i,screenY-V_THRESH), (screenCenterX+i, screenY-V_THRESH+30))
+
+
 # initialize pygame and the screen
 pygame.init()
 screen = pygame.display.set_mode((600, 300)) # width, height values
 pygame.display.set_caption("LeaPiano")
 screenCenterX = 300
 screenY = 300
-V_THRESH = 90 #from processing class
 
 
 # initialize background
@@ -49,10 +64,7 @@ screen.blit(background, (0,0))
 
 # initialize basic GUI
 screenSize = screen.get_size() # (width, height)
-#draw piano line
-pygame.draw.line(screen, RED, (10,screenY-V_THRESH), (screenSize[0]-10, screenY-V_THRESH))
-
-#add vertical lines for the keys
+drawPiano()
 
 # create finger sprites for each finger, put into left and right groups
 rthumb = fingerSprite()
@@ -105,6 +117,5 @@ def update(position): # position is all the gesture info from the leap that is n
 	rightHandSprites.draw(screen)
 	leftHandSprites.clear(screen, background)
 	leftHandSprites.draw(screen)
-	#piano line
-	pygame.draw.line(screen, RED, (10,screenY-V_THRESH), (screenSize[0]-10, screenY-V_THRESH))
+	drawPiano()
 	pygame.display.update() # redraw with *new* updates (similar to pygame.display.update())

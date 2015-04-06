@@ -7,10 +7,7 @@ import gestures
 import gui
 import Processing as p
 
-#thresholds for determining whether a note was played
-vertical_threshold = 90
-#min x = -150, max x = 150
-note_threshold = 20
+
 
 def main():
 

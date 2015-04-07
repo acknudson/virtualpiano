@@ -49,6 +49,23 @@ class Sound():
             'Gs': [False, False, False, False, False, False, False, False]
             }
 
+    noteIndexPlaying = [False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False]
+
+    notesByIndex = [21,23,24,26,28,29,31,
+        33,35,36,38,40,41,43,
+        45,47,48,50,52,53,55,
+        57,58,60,62,64,65,67,
+        69,71,72,74,76,77,79,
+        81,83,84,86,88,89,91,
+        93,95,96,98,100,101,103,
+        105,107,108]
+
+
     
     # noteName is the string letter value of a note (s is concatenated for a sharp/black key)
     # octave is an integer ranging from 0 to 8
@@ -65,8 +82,23 @@ class Sound():
             fs.noteoff(0, note)
             self.notePlaying[noteName][octave] = False
 
+    #play note based on index
+    #ignores shaps
+    def playNoteByIndex(self, noteIndex, volume=100):
+        if not self.noteIndexPlaying[noteIndex]:
+            note = self.notesByIndex[noteIndex]
+            fs.noteon(0, note, volume)
+            self.noteIndexPlaying[noteIndex] = True
+
+    def noteOffByIndex(self, noteIndex, volume=100):
+        if self.noteIndexPlaying[noteIndex]:
+            note = self.notesByIndex[noteIndex]
+            fs.noteoff(0, note)
+            self.noteIndexPlaying[noteIndex] = False
+
+
 #Testing method
-def testSound():
+def testSound1():
     s = Sound()
     s.playNote('A', 4)
     s.playNote('Cs', 5)
@@ -76,4 +108,11 @@ def testSound():
     s.noteOff('Cs', 5)
     s.noteOff('E', 5)
 
-#testSound()
+def testSound2():
+    s = Sound()
+    for i in range(len(s.notesByIndex)):
+        s.playNoteByIndex(i)
+        time.sleep(.05)
+        s.noteOffByIndex(i)
+
+# testSound2()

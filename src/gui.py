@@ -110,7 +110,7 @@ def update(position): # position is all the gesture info from the leap that is n
 			rhspriteList[i].updateColor(BLUE)
 		else:
 			rhspriteList[i].updateColor(RED)
-	print right[4].x+screenCenterX
+	# print right[4].x+screenCenterX
 
 	#screen.blit(background, (0,0)) #erase screen (return to basic background) NEED THIS LINE
 	rightHandSprites.clear(screen, background)

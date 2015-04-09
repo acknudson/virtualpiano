@@ -27,7 +27,6 @@ def position_to_note_played(pos):
 							# 	startPlaying(finger, (scale[i-1], 4))
 							# else:
 							# 	startPlaying(finger, (scale[(i-1)%len(scale)], int(4+round((i-1)/len(scale)))))
-							print i-1, midpoint
 							if i-1 > midpoint:
 								startPlaying(finger,PIANO_CENTER+(i-1-midpoint))
 							else:

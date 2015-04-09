@@ -38,7 +38,7 @@ BLACK = (0,     0,   0)
 def drawPiano():
 	#draw piano line
 	pygame.draw.line(screen, RED, (10,screenY-V_THRESH), (screenSize[0]-10, screenY-V_THRESH))
-	pygame.draw.line(screen, RED, (screenCenterX,screenY-V_THRESH), (screenCenterX, screenY-V_THRESH+30))
+	# pygame.draw.line(screen, RED, (screenCenterX,screenY-V_THRESH), (screenCenterX, screenY-V_THRESH+30))
 	#add vertical lines for the keys
 	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
 	for i in note_cutoffs:

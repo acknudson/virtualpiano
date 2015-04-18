@@ -33,6 +33,22 @@ class Gestures():
                 y = bone.next_joint[1]
                 z = bone.next_joint[2]
                 self.position.update(handType, finger.type(), x,y,z)
+        #if one or more hands are out of the leap range, set their values to be 
+        #above the piano so that they don't get stuck where they were last detected
+        if len(frame.hands)==0:
+            x = 0
+            y = 200
+            z = 200
+            for finger_index in range(5):
+                self.position.update("LEFT", finger_index, x,y,z)
+                self.position.update("RIGHT", finger_index, x,y,z)
+        elif len(frame.hands)==1:
+            x = 0
+            y = 200
+            z = 200
+            handType = "RIGHT" if frame.hands[0].is_left else "LEFT"
+            for finger_index in range(5):
+                self.position.update(handType, finger_index, x,y,z)
 
 
 class Position():

@@ -75,9 +75,11 @@ class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite clas
 #fingerDots = [(70,80), (85,80), (100,80), (115,80), (130,80)]
 
 def drawPiano():
-	#draw piano line
+	#draw piano lines
+
 	#top of keys -- middle horizontal line
 	# pygame.draw.line(screen, RED, (X_MIN+screenCenterX, PIANO_HEIGHT), (X_MAX+screenCenterX, PIANO_HEIGHT))
+	
 	#bottom of keys -- bottom horizontal line
 	pygame.draw.line(screen, RED, (X_MIN+screenCenterX, PIANO_HEIGHT+20), (X_MAX+screenCenterX, PIANO_HEIGHT+20))
 	#top of keys -- top horizontal line
@@ -87,8 +89,11 @@ def drawPiano():
 	note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
 	for i in note_cutoffs:
 		pygame.draw.line(screen, RED, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i, PIANO_HEIGHT+20))
-		pygame.draw.line(screen, BLUE, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
-
+	#add horizontal lines for each of the key edges (where the finger plays)
+	note_cutoffs2 = range(X_MIN,X_MAX, NOTE_WIDTH)
+	for i in note_cutoffs2:
+		pygame.draw.line(screen, RED, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
+	#pygame.draw.line(screen, RED, (screenCenterX+X_MAX,PIANO_HEIGHT), (screenCenterX+X_MAX, PIANO_HEIGHT+20))
 	# keys = drawKeySprites()
 	# keys.draw(screen)
 	#add the trapezoidal lines above the keys to create the illusion of a keyboard
@@ -96,29 +101,29 @@ def drawPiano():
 	topnotewidth = ((X_MAX+screenCenterX-50) - (X_MIN+screenCenterX+50)) / (numNotes-1.0)
 	# pygame.draw.line(screen, BLUE, (50,50), (50 + topnotewidth, 50))
 
-	for i,note_cutoff in enumerate(note_cutoffs):
-		pygame.draw.line(screen, RED, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+note_cutoff, PIANO_HEIGHT))
+	for i,note_topX in enumerate(note_cutoffs):
+		pygame.draw.line(screen, RED, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+note_topX, PIANO_HEIGHT))
 
 	# pygame.draw.polygon(screen, BLACK, [[5, 5], [5, 20], [20, 20], [20, 5]], 5)
 
 #add middle line for each note based on whether it is or is not playing. 
 def updateNotes(isPlayingList):
-	note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
-	for i,note_cutoff in enumerate(note_cutoffs):
-		if isPlayingList[i]:
-			pygame.draw.line(screen, RED, (X_MIN+screenCenterX+i,PIANO_HEIGHT+10), (screenCenterX+i, PIANO_HEIGHT+10))
-		else:
-			pygame.draw.line(screen, RED, (X_MIN+screenCenterX+i,PIANO_HEIGHT+30), (screenCenterX+i, PIANO_HEIGHT))
-
-def drawKeySprites():
-	keySprites = pygame.sprite.Group()
 	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
-	for i in note_cutoffs:
-		key = keySprite(PIANO_HEIGHT, screenCenterX+i, PIANO_HEIGHT+20, screenCenterX+i+NOTE_WIDTH)
-		pygame.draw.polygon(key.image, RED, [[key.top, key.left], [key.top, key.right], [key.bottom, key.right], [key.bottom, key.left]], 5)
-		keySprites.add(key)
+	for i in range(len(note_cutoffs)):
+		if isPlayingList[i]:
+			pygame.draw.line(screen, RED, (screenCenterX+i,PIANO_HEIGHT+10), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT+10))
+		else:
+			pygame.draw.line(screen, RED, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
 
-	return keySprites
+# def drawKeySprites():
+# 	keySprites = pygame.sprite.Group()
+# 	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
+# 	for i in note_cutoffs:
+# 		key = keySprite(PIANO_HEIGHT, screenCenterX+i, PIANO_HEIGHT+20, screenCenterX+i+NOTE_WIDTH)
+# 		pygame.draw.polygon(key.image, RED, [[key.top, key.left], [key.top, key.right], [key.bottom, key.right], [key.bottom, key.left]], 5)
+# 		keySprites.add(key)
+
+# 	return keySprites
 
 # IF SPRITES ARE COLLIDING -- either look into the sprites colliding method
 #or compare the list of keys to the list of notes being played. 
@@ -158,7 +163,8 @@ lhspriteList = [lthumb, lindex, lmiddle, lring, lpinky]
 
 pygame.display.update() #this is crucial -- writes the values to the screen
 
-def update(position): # position is all the gesture info from the leap that is needed
+#TODO: Use the isPlayingList parameter once it's available from main.py
+def update(position): #, isPlayingList): #position is all the gesture info from the leap that is needed
 	left = position.left
 	right = position.right
 
@@ -183,4 +189,6 @@ def update(position): # position is all the gesture info from the leap that is n
 	leftHandSprites.clear(screen, background)
 	leftHandSprites.draw(screen)
 	drawPiano()
+	#TODO: Add this back in once you get the isPlayingList
+	#updateNotes(isPlayingList)
 	pygame.display.update() # redraw with *new* updates (similar to pygame.display.update())

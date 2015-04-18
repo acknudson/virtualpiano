@@ -59,7 +59,7 @@ class Sound():
     notesByIndex = [21,23,24,26,28,29,31,
         33,35,36,38,40,41,43,
         45,47,48,50,52,53,55,
-        57,58,60,62,64,65,67,
+        57,59,60,62,64,65,67,
         69,71,72,74,76,77,79,
         81,83,84,86,88,89,91,
         93,95,96,98,100,101,103,
@@ -100,13 +100,17 @@ class Sound():
 #Testing method
 def testSound1():
     s = Sound()
-    s.playNote('A', 4)
-    s.playNote('Cs', 5)
-    s.playNote('E', 5)
+##    s.playNote('A', 4)
+##    s.playNote('Cs', 5)
+    s.playNote('E',4)
     time.sleep(1)
-    s.noteOff('A', 4)
-    s.noteOff('Cs', 5)
-    s.noteOff('E', 5)
+##    s.noteOff('A', 4)
+##    s.noteOff('Cs', 5)
+    s.noteOff('E',4)
+
+    s.playNote('F', 4)
+    time.sleep(1)
+    s.noteOff('F', 4)
 
 def testSound2():
     s = Sound()
@@ -115,4 +119,4 @@ def testSound2():
         time.sleep(.05)
         s.noteOffByIndex(i)
 
-# testSound2()
+testSound1()

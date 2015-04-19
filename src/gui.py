@@ -56,39 +56,6 @@ class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite clas
 	def updateColor(self, color):
 		self.image.fill(color)
 
-# class keySprite(pygame.sprite.Sprite):
-
-# 	def __init__(self, top, left, bottom, right):
-# 		pygame.sprite.Sprite.__init__(self)
-
-# 		self.image = pygame.Surface([right-left, bottom-top])
-# 		self.rect = self.image.get_rect()
-# 		# self.image.fill()
-
-# 		self.rect.top = top
-# 		self.rect.left = left
-# 		self.rect.bottom = bottom
-# 		self.rect.right = right
-# 		self.top = self.rect.top
-# 		self.left = self.rect.left
-# 		self.bottom = self.rect.bottom
-# 		self.right = self.rect.right
-# 		# self.rect.width = right - left
-# 		# self.rect.height = bottom-top
-
-# 	def update(self, isPresssed): #key is pressed or not
-# 		if isPresssed:
-# 			self.rect.top += 10
-# 			self.image.fill(BLUE)
-
-# 		else:
-# 			self.rect.top -= 10
-# 			self.image.fill(WHITE)
-
-
-#coordinates of each of the dots on the screen, in order from thumb to pinky
-#fingerDots = [(70,80), (85,80), (100,80), (115,80), (130,80)]
-
 def drawPiano():
 	#draw piano lines
 
@@ -111,29 +78,34 @@ def drawPiano():
 		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
 	
 
-	#pygame.draw.line(screen, RED, (screenCenterX+X_MAX,PIANO_HEIGHT), (screenCenterX+X_MAX, PIANO_HEIGHT+20))
-	# keys = drawKeySprites()
-	# keys.draw(screen)
-
-
-	#add the trapezoidal lines above the keys to create the illusion of a keyboard
 	numNotes = len(note_cutoffs)
 	topnotewidth = ((X_MAX+screenCenterX-50) - (X_MIN+screenCenterX+50)) / (numNotes-1.0)
+	blackNoteWidth = ((X_MAX+screenCenterX-40) - (X_MIN+screenCenterX+40)) / (numNotes-1.0)
+	blackKeyXOffset = 40
+	BLACK_KEY_HEIGHT = PIANO_HEIGHT - 35
+	BLACK_KEY_SPACE1 = blackNoteWidth/5
+	BLACK_KEY_SPACE2 = topnotewidth/5
 	for i,noteval in enumerate(note_cutoffs):
+
+		#add the trapezoidal lines above the keys to create the illusion of a keyboard
 		pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+noteval, PIANO_HEIGHT))
+
+		val = -10
 		#draw black keys
 		if blackNotesByIndex[i] != 0:
+			#top horizontal line for each key	
+			topleft = [val+blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth+BLACK_KEY_SPACE1,BLACK_KEY_HEIGHT]
+			topright = [val+blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth-BLACK_KEY_SPACE1, BLACK_KEY_HEIGHT]
+			bottomleft = [val+blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth+BLACK_KEY_SPACE1,BLACK_KEY_HEIGHT+10]
+			bottomright = [val+blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth-BLACK_KEY_SPACE1, BLACK_KEY_HEIGHT+10]
+			pygame.draw.polygon(screen, BLACK, [topleft, topright, bottomright, bottomleft], 0)
+
 			#polygon points are LeftTop, RightTop, RightBottom, LeftBottom
-			pygame.draw.polygon(screen, BLACK, [
-				[X_MIN+screenCenterX+50+i*topnotewidth - (topnotewidth/3), PIANO_HEIGHT-50], 
-				[X_MIN+screenCenterX+50+i*topnotewidth + (topnotewidth/3), PIANO_HEIGHT-50], 
-				[screenCenterX+noteval+NOTE_WIDTH/3, BLACK_KEY_HEIGHT], 
-				[abs(X_MIN+50+i*topnotewidth - (topnotewidth/3) - i)/2, BLACK_KEY_HEIGHT]], 0)
-			
-
-
-	# for i in range(len(blackNotesByIndex)):
-
+			topleft2 = [blackKeyXOffset+X_MIN+screenCenterX+(i)*topnotewidth+BLACK_KEY_SPACE2,PIANO_HEIGHT-50]
+			topright2 = [blackKeyXOffset+X_MIN+screenCenterX+(1+i)*topnotewidth-BLACK_KEY_SPACE2, PIANO_HEIGHT-50]
+			bottomleft2 = [val+blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth+BLACK_KEY_SPACE1,BLACK_KEY_HEIGHT]
+			bottomright2 = [val+blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth-BLACK_KEY_SPACE1, BLACK_KEY_HEIGHT]
+			pygame.draw.polygon(screen, BLACK, [topleft2, topright2, bottomright2, bottomleft2], 0)
 
 
 	#testing drawing polygons
@@ -147,16 +119,6 @@ def updateNotes(isPlayingList):
 			pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT+10), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT+10))
 		else:
 			pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
-
-# def drawKeySprites():
-# 	keySprites = pygame.sprite.Group()
-# 	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
-# 	for i in note_cutoffs:
-# 		key = keySprite(PIANO_HEIGHT, screenCenterX+i, PIANO_HEIGHT+20, screenCenterX+i+NOTE_WIDTH)
-# 		pygame.draw.polygon(key.image, RED, [[key.top, key.left], [key.top, key.right], [key.bottom, key.right], [key.bottom, key.left]], 5)
-# 		keySprites.add(key)
-
-# 	return keySprites
 
 # IF SPRITES ARE COLLIDING -- either look into the sprites colliding method
 #or compare the list of keys to the list of notes being played. 
@@ -229,3 +191,4 @@ def update(position): #, isPlayingList): #position is all the gesture info from 
 	#TODO: Add this back in once you get the isPlayingList
 	#updateNotes(isPlayingList)
 	pygame.display.update() # redraw with *new* updates (similar to pygame.display.update())
+

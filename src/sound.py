@@ -114,8 +114,6 @@ class Sound():
     def setCurrentPiano(self, start, end):
         self.currentPiano = self.notesByIndex[start:end]
         self.currentNotesPlaying = self.noteIndexPlaying[start:end]
-        print "start", self.notesByIndex[start]
-        print "end", self.notesByIndex[end]
 
 
 #Testing method
@@ -144,4 +142,9 @@ def testSound2():
         time.sleep(.5)
         s.noteOffByIndex(i)
 
-# testSound2()
+def testSound3():
+    s = Sound()
+    print len(s.blackNotesByIndex)
+    print len(s.notesByIndex)
+
+# testSound3()

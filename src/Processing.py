@@ -13,20 +13,19 @@ X_MAX = config.X_MAX
 PIANO_CENTER=len(snd.notesByIndex)/2 
 padding = NOTE_WIDTH/10
 
+note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
+piano_size = len(note_cutoffs)
+snd.setCurrentPiano(PIANO_CENTER-piano_size/2, PIANO_CENTER+piano_size/2)
+
 def position_to_note_played(pos):
 
 	for hand in pos.right, pos.left:
 		for finger in hand:
 			if finger.y < V_THRESH:
 				if finger.x > X_MIN and finger.x < X_MAX:
-					note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
-					midpoint = int(math.ceil(len(note_cutoffs)/2))
 					for i in range(1,len(note_cutoffs)):
 						if finger.x > note_cutoffs[i-1]+padding and finger.x < note_cutoffs[i]-padding:
-							if i-1 > midpoint:
-								startPlaying(finger,PIANO_CENTER+(i-1-midpoint))
-							else:
-								startPlaying(finger, PIANO_CENTER-(midpoint-(i-1)))
+							startPlaying(finger, i-1)
 				else:
 					stopPlaying(finger)
 			else:

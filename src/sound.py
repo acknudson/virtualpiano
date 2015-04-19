@@ -131,4 +131,4 @@ def testSound2():
         time.sleep(.5)
         s.noteOffByIndex(i)
 
-testSound2()
+# testSound2()

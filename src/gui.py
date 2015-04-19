@@ -1,6 +1,6 @@
 import pygame
 import config
-import math
+#import math
 
 # initialize pygame and the screen
 pygame.init()
@@ -24,6 +24,20 @@ BLUE  = (0,     0, 255)
 GREEN = (0,   255,   0)
 BLACK = (0,     0,   0)
 WHITE = (255, 255, 255)
+
+#this is from the sound class -- I don't know how to access it other than copying it.
+blackNotesByIndex = [22,0,25,27,0,
+	30,32,34,0,37,39,0,
+	42,44,46,0,49,51,0,
+	54,56,58,0,61,63,0,
+	66,68,70,0,73,75,0,
+	78,80,82,0,85,87,0,
+	90,92,94,0,97,99,0,
+	102,104,106,0]
+
+
+#make the same type of array -- notes by index, or black key for index. only include the black notes
+#just put 0s where there are spaces (no black key) -- the array can represent the skipping with a 0. 
 
 class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite class for better rendering? 
 	#https://www.pygame.org/docs/ref/sprite.html
@@ -90,21 +104,39 @@ def drawPiano():
 	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
 	for i in note_cutoffs:
 		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i, PIANO_HEIGHT+20))
+	
 	#add horizontal lines for each of the key edges (where the finger plays)
 	note_cutoffs2 = range(X_MIN,X_MAX-NOTE_WIDTH, NOTE_WIDTH)
 	for i in note_cutoffs2:
 		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
+	
+
 	#pygame.draw.line(screen, RED, (screenCenterX+X_MAX,PIANO_HEIGHT), (screenCenterX+X_MAX, PIANO_HEIGHT+20))
 	# keys = drawKeySprites()
 	# keys.draw(screen)
+
+
 	#add the trapezoidal lines above the keys to create the illusion of a keyboard
 	numNotes = len(note_cutoffs)
 	topnotewidth = ((X_MAX+screenCenterX-50) - (X_MIN+screenCenterX+50)) / (numNotes-1.0)
-	# pygame.draw.line(screen, BLUE, (50,50), (50 + topnotewidth, 50))
+	for i,noteval in enumerate(note_cutoffs):
+		pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+noteval, PIANO_HEIGHT))
+		#draw black keys
+		if blackNotesByIndex[i] != 0:
+			#polygon points are LeftTop, RightTop, RightBottom, LeftBottom
+			pygame.draw.polygon(screen, BLACK, [
+				[X_MIN+screenCenterX+50+i*topnotewidth - (topnotewidth/3), PIANO_HEIGHT-50], 
+				[X_MIN+screenCenterX+50+i*topnotewidth + (topnotewidth/3), PIANO_HEIGHT-50], 
+				[screenCenterX+noteval+NOTE_WIDTH/3, BLACK_KEY_HEIGHT], 
+				[abs(X_MIN+50+i*topnotewidth - (topnotewidth/3) - i)/2, BLACK_KEY_HEIGHT]], 0)
+			
 
-	for i,note_topX in enumerate(note_cutoffs):
-		pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+note_topX, PIANO_HEIGHT))
 
+	# for i in range(len(blackNotesByIndex)):
+
+
+
+	#testing drawing polygons
 	pygame.draw.polygon(screen, BLACK, [[5, 5], [5, 20], [20, 20], [20, 5]], 0)
 
 #add middle line for each note based on whether it is or is not playing. 

@@ -74,6 +74,8 @@ class Sound():
         90,92,94,0,97,99,0,
         102,104,106,0]
 
+    # print "blackkeys", len(blackNotesByIndex)
+    # print "notesindex", len(notesByIndex)
     def __init__(self):
         self.currentPiano = self.notesByIndex
         self.currentNotesPlaying = self.noteIndexPlaying

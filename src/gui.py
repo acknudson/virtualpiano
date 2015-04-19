@@ -163,14 +163,14 @@ def update(position): # position is all the gesture info from the leap that is n
 	right = position.right
 
 	for i in range(len(left)):
-		lhspriteList[i].update(left[i].x+screenCenterX, screenY-left[i].y - V_THRESH + PIANO_HEIGHT)
+		lhspriteList[i].update(left[i].x+screenCenterX, V_THRESH-left[i].y + PIANO_HEIGHT)
 
 		if left[i].notePlaying != None:
 			lhspriteList[i].updateColor(GREEN)
 		else:
 			lhspriteList[i].updateColor(BLACK)
 	for i in range(len(right)):
-		rhspriteList[i].update(right[i].x+screenCenterX, screenY-right[i].y - V_THRESH + PIANO_HEIGHT)
+		rhspriteList[i].update(right[i].x+screenCenterX, V_THRESH-right[i].y + PIANO_HEIGHT)
 		if right[i].notePlaying != None:
 			rhspriteList[i].updateColor(BLUE)
 		else:

@@ -21,7 +21,8 @@ def main():
         #get the current Leap frame
         g.leapControl()
         p.position_to_note_played(g.position)
-        gui.update(g.position)
+        #TODO: Add the isPlayingList to this method signature when it's ready
+        gui.update(g.position) #, isPlayingList)
         #sound.noteStruck()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

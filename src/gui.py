@@ -1,5 +1,6 @@
 import pygame
 import config
+import math
 
 # initialize pygame and the screen
 pygame.init()
@@ -15,6 +16,7 @@ NOTE_WIDTH = config.NOTE_WIDTH
 X_MIN = config.X_MIN
 X_MAX = config.X_MAX
 PIANO_HEIGHT = screenSize[1] - 50
+BLACK_KEY_HEIGHT = screenSize[1] - 80
 #Need to add something that will eventually highlight the keys when they are played
 # initialize colors
 RED   = (255,   0,   0)
@@ -27,16 +29,15 @@ class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite clas
 	#https://www.pygame.org/docs/ref/sprite.html
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
-		# self.x = None
-		# self.y = None
-		# self.z = z
-		self.image = pygame.Surface([3,3]) #hardcoded the width and height values of the sprite's image
+		self.image = pygame.Surface([8,8]) #hardcoded the width and height values of the sprite's image
 		self.image.fill(BLUE) #hardcoded the color of the sprite
 		self.rect = self.image.get_rect()
 
-	def update(self, x, y):
+	def update(self, x, y, scale):
 		self.rect.x = x
 		self.rect.y = y
+		w,h = self.image.get_size()
+		self.image = pygame.transform.scale(self.image, (scale, scale))
 
 	def updateColor(self, color):
 		self.image.fill(color)
@@ -81,18 +82,18 @@ def drawPiano():
 	# pygame.draw.line(screen, RED, (X_MIN+screenCenterX, PIANO_HEIGHT), (X_MAX+screenCenterX, PIANO_HEIGHT))
 	
 	#bottom of keys -- bottom horizontal line
-	pygame.draw.line(screen, RED, (X_MIN+screenCenterX, PIANO_HEIGHT+20), (X_MAX+screenCenterX, PIANO_HEIGHT+20))
+	pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX, PIANO_HEIGHT+20), (X_MAX+screenCenterX-NOTE_WIDTH, PIANO_HEIGHT+20))
 	#top of keys -- top horizontal line
-	pygame.draw.line(screen, RED, (X_MIN+screenCenterX+50, PIANO_HEIGHT-50), (X_MAX+screenCenterX-50, PIANO_HEIGHT-50))
+	pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50, PIANO_HEIGHT-50), (X_MAX+screenCenterX-50, PIANO_HEIGHT-50))
 
 	#add vertical lines for the keys below the middle horizontal line
-	note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
+	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
 	for i in note_cutoffs:
-		pygame.draw.line(screen, RED, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i, PIANO_HEIGHT+20))
+		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i, PIANO_HEIGHT+20))
 	#add horizontal lines for each of the key edges (where the finger plays)
-	note_cutoffs2 = range(X_MIN,X_MAX, NOTE_WIDTH)
+	note_cutoffs2 = range(X_MIN,X_MAX-NOTE_WIDTH, NOTE_WIDTH)
 	for i in note_cutoffs2:
-		pygame.draw.line(screen, RED, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
+		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
 	#pygame.draw.line(screen, RED, (screenCenterX+X_MAX,PIANO_HEIGHT), (screenCenterX+X_MAX, PIANO_HEIGHT+20))
 	# keys = drawKeySprites()
 	# keys.draw(screen)
@@ -102,18 +103,18 @@ def drawPiano():
 	# pygame.draw.line(screen, BLUE, (50,50), (50 + topnotewidth, 50))
 
 	for i,note_topX in enumerate(note_cutoffs):
-		pygame.draw.line(screen, RED, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+note_topX, PIANO_HEIGHT))
+		pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+note_topX, PIANO_HEIGHT))
 
-	# pygame.draw.polygon(screen, BLACK, [[5, 5], [5, 20], [20, 20], [20, 5]], 5)
+	pygame.draw.polygon(screen, BLACK, [[5, 5], [5, 20], [20, 20], [20, 5]], 0)
 
 #add middle line for each note based on whether it is or is not playing. 
 def updateNotes(isPlayingList):
 	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
 	for i in range(len(note_cutoffs)):
 		if isPlayingList[i]:
-			pygame.draw.line(screen, RED, (screenCenterX+i,PIANO_HEIGHT+10), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT+10))
+			pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT+10), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT+10))
 		else:
-			pygame.draw.line(screen, RED, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
+			pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
 
 # def drawKeySprites():
 # 	keySprites = pygame.sprite.Group()
@@ -160,6 +161,9 @@ leftHandSprites = pygame.sprite.Group()
 leftHandSprites.add(lthumb, lindex, lmiddle, lring, lpinky)
 lhspriteList = [lthumb, lindex, lmiddle, lring, lpinky]
 
+#This array of which notes are playing is smaller than the number of notes that are in the
+#noteIndexPlaying array. Will need to do some computation to figure out if the key is pressed.
+
 
 pygame.display.update() #this is crucial -- writes the values to the screen
 
@@ -169,14 +173,15 @@ def update(position): #, isPlayingList): #position is all the gesture info from 
 	right = position.right
 
 	for i in range(len(left)):
-		lhspriteList[i].update(left[i].x+screenCenterX, V_THRESH-left[i].y + PIANO_HEIGHT)
-
+		scale = int(8*(300+left[i].z)/500)
+		lhspriteList[i].update(left[i].x+screenCenterX, V_THRESH-left[i].y + PIANO_HEIGHT, scale)
 		if left[i].notePlaying != None:
 			lhspriteList[i].updateColor(GREEN)
 		else:
 			lhspriteList[i].updateColor(BLACK)
 	for i in range(len(right)):
-		rhspriteList[i].update(right[i].x+screenCenterX, V_THRESH-right[i].y + PIANO_HEIGHT)
+		scale = int(8*(300+right[i].z)/500)
+		rhspriteList[i].update(right[i].x+screenCenterX, V_THRESH-right[i].y + PIANO_HEIGHT, scale)
 		if right[i].notePlaying != None:
 			rhspriteList[i].updateColor(BLUE)
 		else:

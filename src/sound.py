@@ -103,6 +103,8 @@ class Sound():
     def setCurrentPiano(self, start, end):
         self.currentPiano = self.notesByIndex[start:end]
         self.currentNotesPlaying = self.noteIndexPlaying[start:end]
+        print "start", self.notesByIndex[start]
+        print "end", self.notesByIndex[end]
 
 
 #Testing method

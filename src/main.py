@@ -16,13 +16,15 @@ def main():
     #gui.init()
 
 
+    #could initialize sound here and pass it to processing and gui. 
+
     running = True
     while running:
         #get the current Leap frame
         g.leapControl()
-        p.position_to_note_played(g.position)
+        p.position_to_note_played(g.position) #this would need sound
         #TODO: Add the isPlayingList to this method signature when it's ready
-        gui.update(g.position) #, isPlayingList)
+        gui.update(g.position) #, isPlayingList)  #this would need sound
         #sound.noteStruck()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

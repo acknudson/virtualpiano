@@ -17,6 +17,7 @@ note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
 piano_size = len(note_cutoffs)
 snd.setCurrentPiano(PIANO_CENTER-piano_size/2, PIANO_CENTER+piano_size/2)
 
+
 def position_to_note_played(pos):
 
 	for hand in pos.right, pos.left:

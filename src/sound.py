@@ -65,6 +65,10 @@ class Sound():
         93,95,96,98,100,101,103,
         105,107,108]
 
+    def __init__(self):
+        self.currentPiano = self.notesByIndex
+        self.currentNotesPlaying = self.noteIndexPlaying
+
 
     
     # noteName is the string letter value of a note (s is concatenated for a sharp/black key)
@@ -85,16 +89,20 @@ class Sound():
     #play note based on index
     #ignores shaps
     def playNoteByIndex(self, noteIndex, volume=100):
-        if not self.noteIndexPlaying[noteIndex]:
-            note = self.notesByIndex[noteIndex]
+        if not self.currentNotesPlaying[noteIndex]:
+            note = self.currentPiano[noteIndex]
             fs.noteon(0, note, volume)
-            self.noteIndexPlaying[noteIndex] = True
+            self.currentNotesPlaying[noteIndex] = True
 
     def noteOffByIndex(self, noteIndex, volume=100):
-        if self.noteIndexPlaying[noteIndex]:
-            note = self.notesByIndex[noteIndex]
+        if self.currentNotesPlaying[noteIndex]:
+            note = self.currentPiano[noteIndex]
             fs.noteoff(0, note)
-            self.noteIndexPlaying[noteIndex] = False
+            self.currentNotesPlaying[noteIndex] = False
+
+    def setCurrentPiano(self, start, end):
+        self.currentPiano = self.notesByIndex[start:end]
+        self.currentNotesPlaying = self.noteIndexPlaying[start:end]
 
 
 #Testing method
@@ -114,9 +122,13 @@ def testSound1():
 
 def testSound2():
     s = Sound()
-    for i in range(len(s.notesByIndex)):
+    # for i in range(len(s.notesByIndex)):
+    #     s.playNoteByIndex(i)
+    #     time.sleep(.05)
+    #     s.noteOffByIndex(i)
+    for i in range(18,35):
         s.playNoteByIndex(i)
-        time.sleep(.05)
+        time.sleep(.5)
         s.noteOffByIndex(i)
 
-#testSound1()
+testSound2()

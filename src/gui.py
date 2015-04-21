@@ -17,7 +17,7 @@ V_THRESH = config.V_THRESH
 NOTE_WIDTH = config.NOTE_WIDTH
 X_MIN = config.X_MIN
 X_MAX = config.X_MAX
-MIDDLE_LINE_HEIGHT = screenSize[1]/2.0
+MIDDLE_LINE_HEIGHT = screenSize[1]/2.0 + 25
 PIANO_HEIGHT_BOTTOM = screenSize[1] - 60
 PIANO_HEIGHT_TOP = screenSize[1] - 175
 BLACK_KEY_HEIGHT_BOTTOM = PIANO_HEIGHT_BOTTOM - 10
@@ -72,6 +72,7 @@ def drawPianoBottom():
 	#pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50, PIANO_HEIGHT_BOTTOM-50), (X_MAX+screenCenterX-50, PIANO_HEIGHT_BOTTOM-50))
 
 	#add vertical lines for the keys below the middle horizontal line
+	#TODO: Draw polygons here instead of lines!!
 	note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
 	for i in note_cutoffs:
 		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT_BOTTOM), (screenCenterX+i, PIANO_HEIGHT_BOTTOM+20))
@@ -245,34 +246,58 @@ def update(position): #, isPlayingList): #position is all the gesture info from 
 
 
 	for i in range(len(left)):
-		scale = int(8*(300+left[i].z)/500)
-		if left[i].y -90 >= MIDDLE_LINE_HEIGHT: #make it disappear because it is too high
+		scale = 4#int(8*(300+left[i].z)/500)
+		if left[i].y -90 >= MIDDLE_LINE_HEIGHT: #make it lock to the top because it is too high
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
+		#FIX THIS -- not quite right. Make it more dynamic
+		elif left[i].y -90 <= screenY - (PIANO_HEIGHT_BOTTOM +20): #lock sprites to the bottom of the keys
+			lhSpriteListBottom[i].update(left[i].x+screenCenterX, PIANO_HEIGHT_BOTTOM+20, scale)
 		else:
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, V_THRESH-left[i].y + PIANO_HEIGHT_BOTTOM, scale)
 		if left[i].notePlaying != None:
 			lhSpriteListBottom[i].updateColor(GREEN)
 		else:
 			lhSpriteListBottom[i].updateColor(BLACK)
-
-		lhSpriteListTop[i].update(left[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+left[i].z, 5)
+		
+		#top piano dots
+		#NEED TO RESCALE so that we get the whole range (500) of z motion
+		if BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+left[i].z > MIDDLE_LINE_HEIGHT: #lock sprites to bottom of screen section
+			lhSpriteListTop[i].update(left[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
+		elif BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+left[i].z < PIANO_HEIGHT_TOP-100:
+			lhSpriteListTop[i].update(left[i].x+screenCenterX, PIANO_HEIGHT_TOP-100, scale)
+		else:
+			lhSpriteListTop[i].update(left[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+left[i].z, scale)
 
 	for i in range(len(right)):
-		scale = int(8*(300+right[i].z)/500)
-		rhSpriteListBottom[i].update(right[i].x+screenCenterX, V_THRESH-right[i].y + PIANO_HEIGHT_BOTTOM, scale)
+		scale = 4#int(8*(300+right[i].z)/500)
+		if right[i].y -90 >= MIDDLE_LINE_HEIGHT:#make it lock to the top because it is too high
+			rhSpriteListBottom[i].update(right[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
+		elif right[i].y -90 <= screenY - (PIANO_HEIGHT_BOTTOM +20): #lock sprites to the bottom of the keys
+			rhSpriteListBottom[i].update(right[i].x+screenCenterX, PIANO_HEIGHT_BOTTOM+20, scale)
+		else:
+			rhSpriteListBottom[i].update(right[i].x+screenCenterX, V_THRESH-right[i].y + PIANO_HEIGHT_BOTTOM, scale)
 		if right[i].notePlaying != None:
 			rhSpriteListBottom[i].updateColor(BLUE)
 		else:
 			rhSpriteListBottom[i].updateColor(RED)
-	# print right[4].x+screenCenterX
+	#top piano hands
+		if BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+right[i].z > MIDDLE_LINE_HEIGHT: #lock sprites to bottom of screen section
+			rhSpriteListTop[i].update(right[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
+		elif BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+right[i].z < PIANO_HEIGHT_TOP-100:
+			rhSpriteListTop[i].update(right[i].x+screenCenterX, PIANO_HEIGHT_TOP-100, scale)
+		else:
+			rhSpriteListTop[i].update(right[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+right[i].z, scale)
 
 	#screen.blit(background, (0,0)) #erase screen (return to basic background) NEED THIS LINE
+	#redraw sprites, redraw piano
 	rhSpritesBottom.clear(screen, background)
 	rhSpritesBottom.draw(screen)
 	lhSpritesBottom.clear(screen, background)
 	lhSpritesBottom.draw(screen)
 	lhSpritesTop.clear(screen, background)
 	lhSpritesTop.draw(screen)
+	rhSpritesTop.clear(screen, background)
+	rhSpritesTop.draw(screen)
 	drawPianoBottom()
 	drawPianoTop()
 	pygame.draw.line(screen, BLACK, (0, MIDDLE_LINE_HEIGHT), (screenSize[0], MIDDLE_LINE_HEIGHT))

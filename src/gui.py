@@ -252,7 +252,7 @@ def update(position, blackNotes): #, isPlayingList): #position is all the gestur
 		else:
 			lhSpriteListBottom[i].updateColor(BLACK)
 
-		depth_scale = 100/200
+		depth_scale = 100.0/200
 		lhSpriteListTop[i].update(left[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ DEPTH_THRESH+left[i].z*depth_scale, 5)
 
 	for i in range(len(right)):

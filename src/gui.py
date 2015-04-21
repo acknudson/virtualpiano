@@ -56,14 +56,14 @@ class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite clas
 	def updateColor(self, color):
 		self.image.fill(color)
 
-def drawPiano():
+def drawPianoBottom():
 	#draw piano lines
 
 	#bottom of keys -- bottom horizontal line
 	pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX, PIANO_HEIGHT+20), (X_MAX+screenCenterX, PIANO_HEIGHT+20))
 	
 	#top of keys -- top horizontal line
-	pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50, PIANO_HEIGHT-50), (X_MAX+screenCenterX-50, PIANO_HEIGHT-50))
+	#pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50, PIANO_HEIGHT-50), (X_MAX+screenCenterX-50, PIANO_HEIGHT-50))
 
 	#add vertical lines for the keys below the middle horizontal line
 	note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
@@ -78,15 +78,15 @@ def drawPiano():
 
 	numNotes = len(note_cutoffs)
 	topnotewidth = ((X_MAX+screenCenterX-50) - (X_MIN+screenCenterX+50)) / (numNotes-1.0)
-	blackNoteWidth = ((X_MAX+screenCenterX-40) - (X_MIN+screenCenterX+40)) / (numNotes-1.0)
-	blackKeyXOffset = 40
-	BLACK_KEY_HEIGHT = PIANO_HEIGHT - 35
+	blackNoteWidth = ((X_MAX+screenCenterX) - (X_MIN+screenCenterX)) / (numNotes-1.0)
+	blackKeyXOffset = NOTE_WIDTH/2
+	BLACK_KEY_HEIGHT = PIANO_HEIGHT - 10
 	BLACK_KEY_SPACE1 = blackNoteWidth/5
 	BLACK_KEY_SPACE2 = topnotewidth/5
 	for i,noteval in enumerate(note_cutoffs):
 
 		#add the trapezoidal lines above the keys to create the illusion of a keyboard
-		pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+noteval, PIANO_HEIGHT))
+		# pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+noteval, PIANO_HEIGHT))
 
 		val = 0
 		#draw black keys
@@ -97,7 +97,7 @@ def drawPiano():
 			# bottom = top+10
 			# right = blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth-BLACK_KEY_SPACE1
 			# pygame.draw.polygon(screen, BLACK, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
-			top = PIANO_HEIGHT - 35
+			top = BLACK_KEY_HEIGHT
 			left = blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth +BLACK_KEY_SPACE1
 			bottom = top+10
 			right = blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth -BLACK_KEY_SPACE1
@@ -109,11 +109,11 @@ def drawPiano():
 
 			#polygon points are LeftTop, RightTop, RightBottom, LeftBottom
 			#trapezoidal part of black key
-			topleft2 = [50+X_MIN+screenCenterX+(i)*topnotewidth+BLACK_KEY_SPACE2,PIANO_HEIGHT-50]
-			topright2 = [50+X_MIN+screenCenterX+(1+i)*topnotewidth-BLACK_KEY_SPACE2, PIANO_HEIGHT-50]
-			bottomleft2 = [left,top]
-			bottomright2 = [right, top]
-			pygame.draw.polygon(screen, BLACK, [topleft2, topright2, bottomright2, bottomleft2], 0)
+			# topleft2 = [50+X_MIN+screenCenterX+(i)*topnotewidth+BLACK_KEY_SPACE2,PIANO_HEIGHT-50]
+			# topright2 = [50+X_MIN+screenCenterX+(1+i)*topnotewidth-BLACK_KEY_SPACE2, PIANO_HEIGHT-50]
+			# bottomleft2 = [left,top]
+			# bottomright2 = [right, top]
+			# pygame.draw.polygon(screen, BLACK, [topleft2, topright2, bottomright2, bottomleft2], 0)
 
 
 #add middle line for each note based on whether it is or is not playing. 
@@ -136,7 +136,7 @@ background.fill(WHITE)
 screen.blit(background, (0,0))
 
 # initialize basic GUI
-drawPiano()
+drawPianoBottom()
 
 # create finger sprites for each finger, put into left and right groups
 rthumb = fingerSprite()
@@ -192,7 +192,7 @@ def update(position): #, isPlayingList): #position is all the gesture info from 
 	rightHandSprites.draw(screen)
 	leftHandSprites.clear(screen, background)
 	leftHandSprites.draw(screen)
-	drawPiano()
+	drawPianoBottom()
 	#TODO: Add this back in once you get the isPlayingList
 	#updateNotes(isPlayingList)
 	pygame.display.update() # redraw with *new* updates (similar to pygame.display.update())

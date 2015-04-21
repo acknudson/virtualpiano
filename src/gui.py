@@ -15,7 +15,7 @@ V_THRESH = config.V_THRESH
 NOTE_WIDTH = config.NOTE_WIDTH
 X_MIN = config.X_MIN
 X_MAX = config.X_MAX
-PIANO_HEIGHT = screenSize[1] - 50
+PIANO_HEIGHT = screenSize[1] - 30
 BLACK_KEY_HEIGHT = screenSize[1] - 80
 #Need to add something that will eventually highlight the keys when they are played
 # initialize colors
@@ -59,21 +59,19 @@ class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite clas
 def drawPiano():
 	#draw piano lines
 
-	#top of keys -- middle horizontal line
-	# pygame.draw.line(screen, RED, (X_MIN+screenCenterX, PIANO_HEIGHT), (X_MAX+screenCenterX, PIANO_HEIGHT))
-	
 	#bottom of keys -- bottom horizontal line
-	pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX, PIANO_HEIGHT+20), (X_MAX+screenCenterX-NOTE_WIDTH, PIANO_HEIGHT+20))
+	pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX, PIANO_HEIGHT+20), (X_MAX+screenCenterX, PIANO_HEIGHT+20))
+	
 	#top of keys -- top horizontal line
 	pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50, PIANO_HEIGHT-50), (X_MAX+screenCenterX-50, PIANO_HEIGHT-50))
 
 	#add vertical lines for the keys below the middle horizontal line
-	note_cutoffs = range(X_MIN,X_MAX, NOTE_WIDTH)
+	note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
 	for i in note_cutoffs:
 		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i, PIANO_HEIGHT+20))
 	
 	#add horizontal lines for each of the key edges (where the finger plays)
-	note_cutoffs2 = range(X_MIN,X_MAX-NOTE_WIDTH, NOTE_WIDTH)
+	note_cutoffs2 = range(X_MIN,X_MAX, NOTE_WIDTH)
 	for i in note_cutoffs2:
 		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT), (screenCenterX+i+NOTE_WIDTH, PIANO_HEIGHT))
 	
@@ -90,26 +88,33 @@ def drawPiano():
 		#add the trapezoidal lines above the keys to create the illusion of a keyboard
 		pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX+50+i*topnotewidth,PIANO_HEIGHT-50), (screenCenterX+noteval, PIANO_HEIGHT))
 
-		val = -10
+		val = 0
 		#draw black keys
 		if blackNotesByIndex[i] != 0:
-			#top horizontal line for each key	
-			topleft = [val+blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth+BLACK_KEY_SPACE1,BLACK_KEY_HEIGHT]
-			topright = [val+blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth-BLACK_KEY_SPACE1, BLACK_KEY_HEIGHT]
-			bottomleft = [val+blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth+BLACK_KEY_SPACE1,BLACK_KEY_HEIGHT+10]
-			bottomright = [val+blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth-BLACK_KEY_SPACE1, BLACK_KEY_HEIGHT+10]
-			pygame.draw.polygon(screen, BLACK, [topleft, topright, bottomright, bottomleft], 0)
+			#square part of black keys	
+			# top = PIANO_HEIGHT - 35
+			# left = blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth+BLACK_KEY_SPACE1
+			# bottom = top+10
+			# right = blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth-BLACK_KEY_SPACE1
+			# pygame.draw.polygon(screen, BLACK, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
+			top = PIANO_HEIGHT - 35
+			left = blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth +BLACK_KEY_SPACE1
+			bottom = top+10
+			right = blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth -BLACK_KEY_SPACE1
+			pygame.draw.polygon(screen, BLACK, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
+
+
+			left1 = blackKeyXOffset+X_MIN+screenCenterX+(i)*topnotewidth+BLACK_KEY_SPACE2
+			right2 = blackKeyXOffset+X_MIN+screenCenterX+(1+i)*topnotewidth-BLACK_KEY_SPACE2
 
 			#polygon points are LeftTop, RightTop, RightBottom, LeftBottom
-			topleft2 = [blackKeyXOffset+X_MIN+screenCenterX+(i)*topnotewidth+BLACK_KEY_SPACE2,PIANO_HEIGHT-50]
-			topright2 = [blackKeyXOffset+X_MIN+screenCenterX+(1+i)*topnotewidth-BLACK_KEY_SPACE2, PIANO_HEIGHT-50]
-			bottomleft2 = [val+blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth+BLACK_KEY_SPACE1,BLACK_KEY_HEIGHT]
-			bottomright2 = [val+blackKeyXOffset+X_MIN+screenCenterX+(1+i)*blackNoteWidth-BLACK_KEY_SPACE1, BLACK_KEY_HEIGHT]
+			#trapezoidal part of black key
+			topleft2 = [50+X_MIN+screenCenterX+(i)*topnotewidth+BLACK_KEY_SPACE2,PIANO_HEIGHT-50]
+			topright2 = [50+X_MIN+screenCenterX+(1+i)*topnotewidth-BLACK_KEY_SPACE2, PIANO_HEIGHT-50]
+			bottomleft2 = [left,top]
+			bottomright2 = [right, top]
 			pygame.draw.polygon(screen, BLACK, [topleft2, topright2, bottomright2, bottomleft2], 0)
 
-
-	#testing drawing polygons
-	pygame.draw.polygon(screen, BLACK, [[5, 5], [5, 20], [20, 20], [20, 5]], 0)
 
 #add middle line for each note based on whether it is or is not playing. 
 def updateNotes(isPlayingList):

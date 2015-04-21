@@ -22,7 +22,7 @@ PIANO_HEIGHT_BOTTOM = screenSize[1] - 60
 PIANO_HEIGHT_TOP = screenSize[1] - 175
 BLACK_KEY_HEIGHT_BOTTOM = PIANO_HEIGHT_BOTTOM - 10
 BLACK_KEY_HEIGHT_TOP = PIANO_HEIGHT_TOP - 50
-BLACK_V_THRESH = 0
+DEPTH_THRESH = config.DEPTH_THRESH
 #Need to add something that will eventually highlight the keys when they are played
 # initialize colors
 RED   = (255,   0,   0)
@@ -252,7 +252,8 @@ def update(position, blackNotes): #, isPlayingList): #position is all the gestur
 		else:
 			lhSpriteListBottom[i].updateColor(BLACK)
 
-		lhSpriteListTop[i].update(left[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+left[i].z, 5)
+		depth_scale = 100/200
+		lhSpriteListTop[i].update(left[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ DEPTH_THRESH+left[i].z*depth_scale, 5)
 
 	for i in range(len(right)):
 		# scale = int(8*(300+right[i].z)/500)

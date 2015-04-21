@@ -22,7 +22,7 @@ PIANO_HEIGHT_BOTTOM = screenSize[1] - 60
 PIANO_HEIGHT_TOP = screenSize[1] - 175
 BLACK_KEY_HEIGHT_BOTTOM = PIANO_HEIGHT_BOTTOM - 10
 BLACK_KEY_HEIGHT_TOP = PIANO_HEIGHT_TOP - 50
-BLACK_V_THRESH = 0
+DEPTH_THRESH = config.DEPTH_THRESH
 #Need to add something that will eventually highlight the keys when they are played
 # initialize colors
 RED   = (255,   0,   0)
@@ -62,7 +62,7 @@ class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite clas
 	def updateColor(self, color):
 		self.image.fill(color)
 
-def drawPianoBottom():
+def drawPianoBottom(blackNotes):
 	#draw piano keys -- head-on/side view
 
 	#bottom of keys -- bottom horizontal line
@@ -97,7 +97,7 @@ def drawPianoBottom():
 
 		val = 0
 		#draw black keys
-		if blackNotesByIndex[i] != 0:
+		if i < len(blackNotes) and blackNotes[i] != 0:
 			#square part of black keys	
 			# top = PIANO_HEIGHT_BOTTOM - 35
 			# left = blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth+BLACK_KEY_SPACE1
@@ -123,7 +123,7 @@ def drawPianoBottom():
 			# pygame.draw.polygon(screen, BLACK, [topleft2, topright2, bottomright2, bottomleft2], 0)
 
 
-def drawPianoTop():
+def drawPianoTop(blackNotes):
 	#draw piano keys top-view
 
 	#bottom of keys -- bottom horizontal line
@@ -154,7 +154,7 @@ def drawPianoTop():
 	for i,noteval in enumerate(note_cutoffs):
 		val = 0
 		#draw black keys
-		if blackNotesByIndex[i] != 0:
+		if i < len(blackNotes) and blackNotes[i] != 0:
 			#square part of black keys	
 			top = PIANO_HEIGHT_TOP-100
 			left = blackKeyXOffset+X_MIN+screenCenterX+i*blackNoteWidth +BLACK_KEY_SPACE1
@@ -185,10 +185,6 @@ background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill(WHITE)
 screen.blit(background, (0,0))
-
-# initialize basic GUI
-drawPianoBottom()
-drawPianoTop()
 
 # create finger sprites for each finger and each keyboard, put into left and right groups
 rthumb = fingerSprite()
@@ -239,34 +235,40 @@ lhSpriteListTop = [lthumb2, lindex2, lmiddle2, lring2, lpinky2]
 pygame.display.update() #this is crucial -- writes the values to the screen
 
 #TODO: Use the isPlayingList parameter once it's available from main.py
-def update(position): #, isPlayingList): #position is all the gesture info from the leap that is needed
+def update(position, blackNotes): #, isPlayingList): #position is all the gesture info from the leap that is needed
 	left = position.left
 	right = position.right
 
-
-
+	#TODO: There is a new threshold variable for playing because of the black keys, so you'll need to change when the finger color is updated
+	#TODO: Fix the thresholding to lock the fingers in the screen/keyboard accurately
+	#TODO: Notes highlight when being played
+	#TODO: Fix the depth thresh -- make sure it's not inverting anything on the screen
+	#TODO: Redraw the vertical black lines on top of the polygons for the bottom keyboard so that we can see the outlines when notes are highlighted
 	for i in range(len(left)):
-		scale = 4#int(8*(300+left[i].z)/500)
-		if left[i].y -90 >= MIDDLE_LINE_HEIGHT: #make it lock to the top because it is too high
+		# scale = int(8*(300+left[i].z)/500)
+		scale = 4
+		if left[i].y -90 >= MIDDLE_LINE_HEIGHT: #make it disappear because it is too high
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
 		#FIX THIS -- not quite right. Make it more dynamic
 		elif left[i].y -90 <= screenY - (PIANO_HEIGHT_BOTTOM +20): #lock sprites to the bottom of the keys
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, PIANO_HEIGHT_BOTTOM+20, scale)
 		else:
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, V_THRESH-left[i].y + PIANO_HEIGHT_BOTTOM, scale)
+		
+		#update finger colors if playing
 		if left[i].notePlaying != None:
 			lhSpriteListBottom[i].updateColor(GREEN)
 		else:
 			lhSpriteListBottom[i].updateColor(BLACK)
 		
 		#top piano dots
-		#NEED TO RESCALE so that we get the whole range (500) of z motion
-		if BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+left[i].z > MIDDLE_LINE_HEIGHT: #lock sprites to bottom of screen section
+		if BLACK_KEY_HEIGHT_TOP+ DEPTH_THRESH+left[i].z > MIDDLE_LINE_HEIGHT: #lock sprites to bottom of screen section
 			lhSpriteListTop[i].update(left[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
-		elif BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+left[i].z < PIANO_HEIGHT_TOP-100:
+		elif BLACK_KEY_HEIGHT_TOP+ DEPTH_THRESH+left[i].z < PIANO_HEIGHT_TOP-100:
 			lhSpriteListTop[i].update(left[i].x+screenCenterX, PIANO_HEIGHT_TOP-100, scale)
 		else:
-			lhSpriteListTop[i].update(left[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+left[i].z, scale)
+			depth_scale = 100.0/200
+			lhSpriteListTop[i].update(left[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ DEPTH_THRESH+left[i].z*depth_scale, scale)
 
 	for i in range(len(right)):
 		scale = 4#int(8*(300+right[i].z)/500)
@@ -276,17 +278,22 @@ def update(position): #, isPlayingList): #position is all the gesture info from 
 			rhSpriteListBottom[i].update(right[i].x+screenCenterX, PIANO_HEIGHT_BOTTOM+20, scale)
 		else:
 			rhSpriteListBottom[i].update(right[i].x+screenCenterX, V_THRESH-right[i].y + PIANO_HEIGHT_BOTTOM, scale)
+
+		#update finger colors if playing
 		if right[i].notePlaying != None:
 			rhSpriteListBottom[i].updateColor(BLUE)
 		else:
 			rhSpriteListBottom[i].updateColor(RED)
-	#top piano hands
-		if BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+right[i].z > MIDDLE_LINE_HEIGHT: #lock sprites to bottom of screen section
+		
+		#top piano hands
+		if BLACK_KEY_HEIGHT_TOP+ DEPTH_THRESH+right[i].z > MIDDLE_LINE_HEIGHT: #lock sprites to bottom of screen section
 			rhSpriteListTop[i].update(right[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
-		elif BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+right[i].z < PIANO_HEIGHT_TOP-100:
+		elif BLACK_KEY_HEIGHT_TOP+ DEPTH_THRESH+right[i].z < PIANO_HEIGHT_TOP-100:
 			rhSpriteListTop[i].update(right[i].x+screenCenterX, PIANO_HEIGHT_TOP-100, scale)
 		else:
-			rhSpriteListTop[i].update(right[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ BLACK_V_THRESH+right[i].z, scale)
+			depth_scale = 100.0/200
+			rhSpriteListTop[i].update(right[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP+ DEPTH_THRESH+right[i].z*depth_scale, scale)
+		
 
 	#screen.blit(background, (0,0)) #erase screen (return to basic background) NEED THIS LINE
 	#redraw sprites, redraw piano
@@ -298,8 +305,8 @@ def update(position): #, isPlayingList): #position is all the gesture info from 
 	lhSpritesTop.draw(screen)
 	rhSpritesTop.clear(screen, background)
 	rhSpritesTop.draw(screen)
-	drawPianoBottom()
-	drawPianoTop()
+	drawPianoBottom(blackNotes)
+	drawPianoTop(blackNotes)
 	pygame.draw.line(screen, BLACK, (0, MIDDLE_LINE_HEIGHT), (screenSize[0], MIDDLE_LINE_HEIGHT))
 	#TODO: Add this back in once you get the isPlayingList
 	#updateNotes(isPlayingList)

@@ -2,35 +2,64 @@ import sound
 import config
 import math
 
-# initialize necessary sounds/scale
-scale = ('C', 'D', 'E', 'F', 'G', 'A', 'B', 'C')
 snd = sound.Sound()
 
 V_THRESH = config.V_THRESH
+BLACK_V_THRESH = config.BLACK_V_THRESH
+DEPTH_THRESH = config.DEPTH_THRESH
 NOTE_WIDTH = config.NOTE_WIDTH
 X_MIN = config.X_MIN
 X_MAX = config.X_MAX
 PIANO_CENTER=len(snd.notesByIndex)/2 
 padding = NOTE_WIDTH/10
+BLACK_NOTE_WIDTH = config.BLACK_NOTE_WIDTH
 
 note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
 piano_size = len(note_cutoffs)
 snd.setCurrentPiano(PIANO_CENTER-piano_size/2, PIANO_CENTER+piano_size/2)
 
 
+# def position_to_note_played(pos):
+
+# 	for hand in pos.right, pos.left:
+# 		for finger in hand:
+# 			if finger.y < V_THRESH:
+# 				if finger.x > X_MIN and finger.x < X_MAX:
+# 					for i in range(1,len(note_cutoffs)):
+# 						if finger.x > note_cutoffs[i-1]+padding and finger.x < note_cutoffs[i]-padding:
+# 							startPlaying(finger, i-1)
+# 				else:
+# 					stopPlaying(finger)
+# 			else:
+# 				stopPlaying(finger)
+
+
 def position_to_note_played(pos):
 
 	for hand in pos.right, pos.left:
 		for finger in hand:
-			if finger.y < V_THRESH:
-				if finger.x > X_MIN and finger.x < X_MAX:
-					for i in range(1,len(note_cutoffs)):
-						if finger.x > note_cutoffs[i-1]+padding and finger.x < note_cutoffs[i]-padding:
-							startPlaying(finger, i-1)
+			if finger.z > DEPTH_THRESH: #play white notes
+				if finger.y < V_THRESH:
+					if finger.x > X_MIN and finger.x < X_MAX:
+						for i in range(1,len(note_cutoffs)):
+							if finger.x > note_cutoffs[i-1]+padding and finger.x < note_cutoffs[i]-padding:
+								startPlaying(finger, i-1)
+					else:
+						stopPlaying(finger)
 				else:
 					stopPlaying(finger)
-			else:
-				stopPlaying(finger)
+			else: #play black notes
+				if finger.y < BLACK_V_THRESH:
+					if finger.x > X_MIN and finger.x < X_MAX:
+						for i in range(1,len(note_cutoffs)):
+							if finger.x > note_cutoffs[i-1]+padding+NOTE_WIDTH/2 and finger.x < note_cutoffs[i]-padding:
+								startPlayingBlack(finger, i-1)
+					else:
+						stopPlayingBlack(finger)
+				else:
+					stopPlayingBlack(finger)
+	return snd.currentBlackPiano
+
 
 
 def startPlaying(finger, note):
@@ -44,5 +73,15 @@ def stopPlaying(finger):
 		snd.noteOffByIndex(finger.notePlaying)
 	finger.notePlaying = None
 
+def startPlayingBlack(finger, note):
+	if finger.notePlayingBlack != None and note != finger.notePlayingBlack:
+		snd.blackNoteOffByIndex(finger.notePlayingBlack)
+	finger.notePlayingBlack = note
+	snd.playBlackNoteByIndex(finger.notePlayingBlack)
+
+def stopPlayingBlack(finger):
+	if finger.notePlayingBlack != None:
+		snd.blackNoteOffByIndex(finger.notePlayingBlack)
+	finger.notePlayingBlack = None
 
 

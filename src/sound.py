@@ -65,12 +65,14 @@ class Sound():
         93,95,96,98,100,101,103,
         105,107,108]
 
-    BlackNoteIndexPlaying = [False, False, False, False, False, False, False, 
-    False, False, False, False, False, False, False, False, False, False, 
-    False, False, False, False, False, False, False, False, False, False, 
-    False, False, False, False, False, False, False, False, False, False, 
-    False, False, False, False, False, False, False, False, False, False, 
-    False, False, False, False, False]
+    BlackNoteIndexPlaying = [False, None, False, False, None,
+    False, False, False, None, False, False, None,
+    False, False, False, None, False, False, None, 
+    False, False, False, None, False, False, None, 
+    False, False, False, None, False, False, None, 
+    False, False, False, None, False, False, None, 
+    False, False, False, None, False, False, None, 
+    False, False, False, None]
 
     blackNotesByIndex = [22,0,25,27,0,
         30,32,34,0,37,39,0,
@@ -122,13 +124,17 @@ class Sound():
             self.currentNotesPlaying[noteIndex] = False
 
     def playBlackNoteByIndex(self, noteIndex, volume=100):
-        if not self.currentBlackNotesPlaying[noteIndex]:
+        if self.currentBlackNotesPlaying[noteIndex] == None:
+            return
+        if self.currentBlackNotesPlaying[noteIndex] == False:
             note = self.currentBlackPiano[noteIndex]
             fs.noteon(0, note, volume)
             self.currentBlackNotesPlaying[noteIndex] = True
 
     def blackNoteOffByIndex(self, noteIndex, volume=100):
-        if self.currentBlackNotesPlaying[noteIndex]:
+        if self.currentBlackNotesPlaying[noteIndex] == None:
+            return
+        if self.currentBlackNotesPlaying[noteIndex] == True:
             note = self.currentBlackPiano[noteIndex]
             fs.noteoff(0, note)
             self.currentBlackNotesPlaying[noteIndex] = False

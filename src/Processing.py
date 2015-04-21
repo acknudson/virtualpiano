@@ -46,8 +46,12 @@ def position_to_note_played(pos):
 								startPlaying(finger, i-1)
 					else:
 						stopPlaying(finger)
+						stopPlayingBlack(finger)
+
 				else:
 					stopPlaying(finger)
+					stopPlayingBlack(finger)
+
 			else: #play black notes
 				if finger.y < BLACK_V_THRESH:
 					if finger.x > X_MIN and finger.x < X_MAX:
@@ -55,10 +59,12 @@ def position_to_note_played(pos):
 							if finger.x > note_cutoffs[i-1]+padding+NOTE_WIDTH/2 and finger.x < note_cutoffs[i]-padding:
 								startPlayingBlack(finger, i-1)
 					else:
+						stopPlaying(finger)
 						stopPlayingBlack(finger)
 				else:
+					stopPlaying(finger)
 					stopPlayingBlack(finger)
-	return snd.currentBlackPiano
+	return (snd.currentNotesPlaying, snd.currentBlackNotesPlaying)
 
 
 

@@ -13,20 +13,14 @@ import sound
 def main():
 
     g = gestures.Gestures()
-    # create a blank screen
-    #gui.init()
-    # snd = sound.Sound()
-
-
-    #could initialize sound here and pass it to processing and gui. 
 
     running = True
     while running:
         #get the current Leap frame
         g.leapControl()
-        currentBlackPiano = p.position_to_note_played(g.position) #this would need sound
+        (notesPlaying, blackNotesPlaying) = p.position_to_note_played(g.position) #this would need sound
         #TODO: Add the isPlayingList to this method signature when it's ready
-        gui.update(g.position, currentBlackPiano) #, isPlayingList)  #this would need sound
+        gui.update(g.position, notesPlaying, blackNotesPlaying) #, isPlayingList)  #this would need sound
         #sound.noteStruck()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

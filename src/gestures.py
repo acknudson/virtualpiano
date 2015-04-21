@@ -37,15 +37,15 @@ class Gestures():
         #above the piano so that they don't get stuck where they were last detected
         if len(frame.hands)==0:
             x = 0
-            y = 200
-            z = 200
+            y = 400
+            z = 0
             for finger_index in range(5):
                 self.position.update("LEFT", finger_index, x,y,z)
                 self.position.update("RIGHT", finger_index, x,y,z)
         elif len(frame.hands)==1:
             x = 0
-            y = 200
-            z = 200
+            y = 400
+            z = 0
             handType = "RIGHT" if frame.hands[0].is_left else "LEFT"
             for finger_index in range(5):
                 self.position.update(handType, finger_index, x,y,z)
@@ -82,6 +82,7 @@ class Finger():
         self.index = i
         self.type = self.finger_types[i]
         self.notePlaying = None #note is a tuple of (NoteName, Octave)
+        self.notePlayingBlack = None
 
 
 

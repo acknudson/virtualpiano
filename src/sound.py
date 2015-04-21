@@ -65,6 +65,13 @@ class Sound():
         93,95,96,98,100,101,103,
         105,107,108]
 
+    BlackNoteIndexPlaying = [False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False]
+
     blackNotesByIndex = [22,0,25,27,0,
         30,32,34,0,37,39,0,
         42,44,46,0,49,51,0,
@@ -79,6 +86,9 @@ class Sound():
     def __init__(self):
         self.currentPiano = self.notesByIndex
         self.currentNotesPlaying = self.noteIndexPlaying
+
+        self.currentBlackPiano = self.blackNotesByIndex
+        self.currentBlackNotesPlaying = self.BlackNoteIndexPlaying
 
 
     
@@ -111,9 +121,24 @@ class Sound():
             fs.noteoff(0, note)
             self.currentNotesPlaying[noteIndex] = False
 
+    def playBlackNoteByIndex(self, noteIndex, volume=100):
+        if not self.currentBlackNotesPlaying[noteIndex]:
+            note = self.currentBlackPiano[noteIndex]
+            fs.noteon(0, note, volume)
+            self.currentBlackNotesPlaying[noteIndex] = True
+
+    def blackNoteOffByIndex(self, noteIndex, volume=100):
+        if self.currentBlackNotesPlaying[noteIndex]:
+            note = self.currentBlackPiano[noteIndex]
+            fs.noteoff(0, note)
+            self.currentBlackNotesPlaying[noteIndex] = False
+
     def setCurrentPiano(self, start, end):
         self.currentPiano = self.notesByIndex[start:end]
         self.currentNotesPlaying = self.noteIndexPlaying[start:end]
+
+        self.currentBlackPiano = self.blackNotesByIndex[start:end]
+        self.currentBlackNotesPlaying = self.BlackNoteIndexPlaying[start:end]
 
 
 #Testing method
@@ -141,10 +166,34 @@ def testSound2():
         s.playNoteByIndex(i)
         time.sleep(.5)
         s.noteOffByIndex(i)
+        s.playBlackNoteByIndex(i)
+        time.sleep(.5)
+        s.blackNoteOffByIndex(i)
 
 def testSound3():
     s = Sound()
     print len(s.blackNotesByIndex)
     print len(s.notesByIndex)
 
-# testSound3()
+def testSound4():
+    fs.noteon(0,45,100)
+    time.sleep(.5)
+    fs.noteoff(0,45)
+    fs.noteon(0,0,100)
+    time.sleep(.5)
+    fs.noteoff(0,0) 
+    fs.noteon(0,45,100)
+    time.sleep(.5)
+    fs.noteoff(0,45)
+
+
+def testSound5():
+    s = Sound()
+    for i in range(len(s.blackNotesByIndex)):
+        if s.blackNotesByIndex[i] != 0:
+            s.playBlackNoteByIndex(i)
+            time.sleep(.20)
+            s.blackNoteOffByIndex(i)
+
+
+# testSound5()

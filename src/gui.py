@@ -31,9 +31,6 @@ Z_TOP_THRESH = -180
 Z_BOTTOM_THRESH = -20
 Z_BLACK_KEY_THRESH = -100
 
-print "top", BOTTOM_PIANO_TOP_LINE
-print "bottom", BOTTOM_PIANO_BOTTOM_LINE
-
 # initialize colors
 RED   = (255,   0,   0)
 BLUE  = (0,   128, 255)
@@ -257,7 +254,6 @@ def update(position, notes, blackNotes, noteHovering, blackNoteHovering):
 			lhSpriteListTop[i].update(left[i].x+screenCenterX, TOP_PIANO_BOTTOM_LINE+left[i].z*depth_scale)
 
 	for i in range(len(right)):
-		scale = 4
 		if V_THRESH-right[i].y + BOTTOM_PIANO_TOP_LINE <= MIDDLE_LINE_HEIGHT:
 			# print V_THRESH-right[i].y + BOTTOM_PIANO_TOP_LINE 
 			#make it lock to the top of the bottom piano's screen because the finger is too high

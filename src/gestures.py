@@ -36,14 +36,14 @@ class Gestures():
         #if one or more hands are out of the leap range, set their values to be 
         #above the piano so that they don't get stuck where they were last detected
         if len(frame.hands)==0:
-            x = 0
+            x = 400
             y = 400
             z = 400
             for finger_index in range(5):
                 self.position.update("LEFT", finger_index, x,y,z)
                 self.position.update("RIGHT", finger_index, x,y,z)
         elif len(frame.hands)==1:
-            x = 0
+            x = 400
             y = 400
             z = 400
             handType = "RIGHT" if frame.hands[0].is_left else "LEFT"

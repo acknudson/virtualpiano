@@ -32,8 +32,8 @@ BLUE  = (0,     0, 255)
 GREEN = (0,   255,   0)
 BLACK = (0,     0,   0)
 WHITE = (255, 255, 255)
-LIGHT_GRAY = (175, 175, 175)
-DARK_GRAY = (100, 100, 100)
+LIGHT_GRAY = (220, 220, 220)
+DARK_GRAY = (175, 175, 175)
 
 #this is from the sound class -- I don't know how to access it other than copying it.
 blackNotesByIndex = [22,0,25,27,0,
@@ -66,8 +66,8 @@ class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite clas
 	def updateColor(self, color):
 		self.image.fill(color)
 
-def drawPianoBottom(notes, blackNotes):
-	
+def drawPianoBottom(notes, blackNotes, noteHovering, blackNoteHovering):
+
 	#add vertical lines for the keys below the middle horizontal line
 	numNotes = len(notes)
 	blackNoteWidth = ((X_MAX+screenCenterX) - (X_MIN+screenCenterX)) / (numNotes)
@@ -79,7 +79,12 @@ def drawPianoBottom(notes, blackNotes):
 		left = X_MIN+screenCenterX+i*NOTE_WIDTH
 		bottom = PIANO_HEIGHT_BOTTOM
 		right = X_MIN+screenCenterX+(i+1)*NOTE_WIDTH
-		color = BLUE if notes[i] else WHITE
+		if notes[i]:
+			color = BLUE 
+		elif noteHovering[i]:
+			color = LIGHT_GRAY
+		else:
+			color = WHITE
 		pygame.draw.polygon(screen, color, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
 
 		#draw black keys
@@ -88,7 +93,12 @@ def drawPianoBottom(notes, blackNotes):
 			left = blackKeyXOffset+X_MIN+screenCenterX+(i-1)*blackNoteWidth +BLACK_KEY_SPACE
 			bottom = top-BLACK_KEY_HEIGHT
 			right = blackKeyXOffset+X_MIN+screenCenterX+(i)*blackNoteWidth -BLACK_KEY_SPACE
-			color = BLUE if blackNotes[i] else BLACK
+			if blackNotes[i]:
+				color = BLUE 
+			elif blackNoteHovering[i]:
+				color = LIGHT_GRAY
+			else:
+				color = BLACK
 			pygame.draw.polygon(screen, color, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
 
 	#draw outlines of the keys
@@ -96,9 +106,18 @@ def drawPianoBottom(notes, blackNotes):
 	pygame.draw.line(screen, BLACK, (X_MIN+screenCenterX,PIANO_HEIGHT_BOTTOM), (X_MAX+ screenCenterX, PIANO_HEIGHT_BOTTOM))
 	for i in range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH):
 		pygame.draw.line(screen, BLACK, (screenCenterX+i,PIANO_HEIGHT_BOTTOM), (screenCenterX+i, PIANO_HEIGHT_BOTTOM+20))
+
+	for i,noteval in enumerate(range(X_MIN,X_MAX, NOTE_WIDTH)):
+		#draw black keys
+		if i < len(blackNotes) and blackNotes[i] != None:
+			top = BLACK_KEY_HEIGHT_BOTTOM+10
+			left = blackKeyXOffset+X_MIN+screenCenterX+(i-1)*blackNoteWidth +BLACK_KEY_SPACE
+			bottom = top-BLACK_KEY_HEIGHT
+			right = blackKeyXOffset+X_MIN+screenCenterX+(i)*blackNoteWidth -BLACK_KEY_SPACE
+			pygame.draw.polygon(screen, BLACK, [[left,top], [right, top], [right, bottom], [left,bottom]], 1)	
 	
 
-def drawPianoTop(notes, blackNotes):
+def drawPianoTop(notes, blackNotes, noteHovering, blackNoteHovering):
 	#draw piano keys top-view
 
 	#draw polygons for the black keys
@@ -112,10 +131,15 @@ def drawPianoTop(notes, blackNotes):
 		whiteTop = PIANO_HEIGHT_TOP-100
 		whiteRight = X_MIN+screenCenterX+i*NOTE_WIDTH + NOTE_WIDTH
 		whiteBottom = PIANO_HEIGHT_TOP
-		color = BLUE if notes[i] else WHITE
+		if notes[i]:
+			color = BLUE 
+		elif noteHovering[i]:
+			color = LIGHT_GRAY
+		else:
+			color = WHITE
 		pygame.draw.polygon(screen, color, [[whiteLeft,whiteTop], [whiteRight, whiteTop], [whiteRight, whiteBottom], [whiteLeft,whiteBottom]], 0)
 	
-	#draw polygons for the white keys
+	#draw outlines for the white keys
 	for i in range(X_MIN,X_MAX, NOTE_WIDTH):
 		whiteLeft = screenCenterX+i
 		whiteTop = PIANO_HEIGHT_TOP-100
@@ -132,8 +156,23 @@ def drawPianoTop(notes, blackNotes):
 			left = blackKeyXOffset+X_MIN+screenCenterX+(i-1)*blackNoteWidth +BLACK_KEY_SPACE
 			bottom = BLACK_KEY_HEIGHT_TOP
 			right = blackKeyXOffset+X_MIN+screenCenterX+(i)*blackNoteWidth -BLACK_KEY_SPACE
-			color = BLUE if blackNotes[i] else BLACK
+			if blackNotes[i]:
+				color = BLUE 
+			elif blackNoteHovering[i]:
+				color = LIGHT_GRAY
+			else:
+				color = BLACK
 			pygame.draw.polygon(screen, color, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
+
+	#draw black outline
+	for i,noteval in enumerate(range(X_MIN,X_MAX, NOTE_WIDTH)):
+		if i < len(blackNotes) and blackNotes[i] != None:
+			#square part of black keys	
+			top = PIANO_HEIGHT_TOP-100
+			left = blackKeyXOffset+X_MIN+screenCenterX+(i-1)*blackNoteWidth +BLACK_KEY_SPACE
+			bottom = BLACK_KEY_HEIGHT_TOP
+			right = blackKeyXOffset+X_MIN+screenCenterX+(i)*blackNoteWidth -BLACK_KEY_SPACE
+			pygame.draw.polygon(screen, BLACK, [[left,top], [right, top], [right, bottom], [left,bottom]], 1)
 
 	
 
@@ -192,7 +231,7 @@ lhSpriteListTop = [lthumb2, lindex2, lmiddle2, lring2, lpinky2]
 pygame.display.update() #this is crucial -- writes the values to the screen
 
 #TODO: Use the isPlayingList parameter once it's available from main.py
-def update(position, notes, blackNotes): #, isPlayingList): #position is all the gesture info from the leap that is needed
+def update(position, notes, blackNotes, noteHovering, blackNoteHovering): #, isPlayingList): #position is all the gesture info from the leap that is needed
 	left = position.left
 	right = position.right
 
@@ -202,9 +241,8 @@ def update(position, notes, blackNotes): #, isPlayingList): #position is all the
 	#TODO: Fix the depth thresh -- make sure it's not inverting anything on the screen
 	#TODO: Redraw the vertical black lines on top of the polygons for the bottom keyboard so that we can see the outlines when notes are highlighted
 	for i in range(len(left)):
-		# scale = int(8*(300+left[i].z)/500)
 		scale = 4
-		if left[i].y -90 >= MIDDLE_LINE_HEIGHT: #make it disappear because it is too high
+		if V_THRESH-left[i].y+ PIANO_HEIGHT_BOTTOM <= MIDDLE_LINE_HEIGHT: #make it disappear because it is too high
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
 		else:
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, V_THRESH-left[i].y + PIANO_HEIGHT_BOTTOM, scale)
@@ -219,11 +257,9 @@ def update(position, notes, blackNotes): #, isPlayingList): #position is all the
 			lhSpriteListTop[i].update(left[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP- DEPTH_THRESH+left[i].z*depth_scale, scale)
 
 	for i in range(len(right)):
-		scale = 4#int(8*(300+right[i].z)/500)
-		if right[i].y -90 >= MIDDLE_LINE_HEIGHT:#make it lock to the top because it is too high
+		scale = 4
+		if V_THRESH-right[i].y + PIANO_HEIGHT_BOTTOM <= MIDDLE_LINE_HEIGHT:#make it lock to the top because it is too high
 			rhSpriteListBottom[i].update(right[i].x+screenCenterX, MIDDLE_LINE_HEIGHT, scale)
-		elif right[i].y -90 <= screenY - (PIANO_HEIGHT_BOTTOM +20): #lock sprites to the bottom of the keys
-			rhSpriteListBottom[i].update(right[i].x+screenCenterX, PIANO_HEIGHT_BOTTOM+20, scale)
 		else:
 			rhSpriteListBottom[i].update(right[i].x+screenCenterX, V_THRESH-right[i].y + PIANO_HEIGHT_BOTTOM, scale)
 		
@@ -237,8 +273,8 @@ def update(position, notes, blackNotes): #, isPlayingList): #position is all the
 			rhSpriteListTop[i].update(right[i].x+screenCenterX, BLACK_KEY_HEIGHT_TOP- DEPTH_THRESH+right[i].z*depth_scale, scale)
 		
 
-	drawPianoBottom(notes, blackNotes)
-	drawPianoTop(notes, blackNotes)
+	drawPianoBottom(notes, blackNotes, noteHovering, blackNoteHovering)
+	drawPianoTop(notes, blackNotes, noteHovering, blackNoteHovering)
 
 	rhSpritesBottom.clear(screen, background)
 	rhSpritesBottom.draw(screen)

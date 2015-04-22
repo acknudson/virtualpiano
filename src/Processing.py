@@ -19,22 +19,10 @@ piano_size = len(note_cutoffs)
 snd.setCurrentPiano(PIANO_CENTER-piano_size/2, PIANO_CENTER+piano_size/2)
 
 
-# def position_to_note_played(pos):
-
-# 	for hand in pos.right, pos.left:
-# 		for finger in hand:
-# 			if finger.y < V_THRESH:
-# 				if finger.x > X_MIN and finger.x < X_MAX:
-# 					for i in range(1,len(note_cutoffs)):
-# 						if finger.x > note_cutoffs[i-1]+padding and finger.x < note_cutoffs[i]-padding:
-# 							startPlaying(finger, i-1)
-# 				else:
-# 					stopPlaying(finger)
-# 			else:
-# 				stopPlaying(finger)
-
-
 def position_to_note_played(pos):
+
+	snd.currentHoveringNote = [False]*len(snd.currentHoveringNote)
+	snd.currentHoveringBlackNote = [False]*len(snd.currentHoveringBlackNote)
 
 	for hand in pos.right, pos.left:
 		for finger in hand:
@@ -47,6 +35,12 @@ def position_to_note_played(pos):
 					else:
 						stopPlaying(finger)
 						stopPlayingBlack(finger)
+				elif finger.x > X_MIN and finger.x < X_MAX:
+					for i in range(1,len(note_cutoffs)):
+						if finger.x > note_cutoffs[i-1]+padding and finger.x < note_cutoffs[i]-padding:
+							snd.currentHoveringNote[i-1] = True
+					stopPlaying(finger)
+					stopPlayingBlack(finger)
 
 				else:
 					stopPlaying(finger)
@@ -61,10 +55,16 @@ def position_to_note_played(pos):
 					else:
 						stopPlaying(finger)
 						stopPlayingBlack(finger)
+				elif finger.x > X_MIN and finger.x < X_MAX:
+					for i in range(1,len(note_cutoffs)):
+						if finger.x > (note_cutoffs[i-1]-NOTE_WIDTH/2)+padding and finger.x < (note_cutoffs[i]-NOTE_WIDTH/2)-padding:
+							snd.currentHoveringBlackNote[i-1] = True
+					stopPlaying(finger)
+					stopPlayingBlack(finger)
 				else:
 					stopPlaying(finger)
 					stopPlayingBlack(finger)
-	return (snd.currentNotesPlaying, snd.currentBlackNotesPlaying)
+	return (snd.currentNotesPlaying, snd.currentBlackNotesPlaying, snd.currentHoveringNote, snd.currentHoveringBlackNote)
 
 
 

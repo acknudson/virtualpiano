@@ -56,6 +56,13 @@ class Sound():
     False, False, False, False, False, False, False, False, False, False, 
     False, False, False, False, False]
 
+    hoveringNote = [False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False, False, False, False, False, False, 
+    False, False, False, False, False]
+
     notesByIndex = [21,23,24,26,28,29,31,
         33,35,36,38,40,41,43,
         45,47,48,50,52,53,55,
@@ -65,7 +72,7 @@ class Sound():
         93,95,96,98,100,101,103,
         105,107,108]
 
-    BlackNoteIndexPlaying = [False, None, False, False, None,
+    BlackNoteIndexPlaying = [None, False, None, False, False, None,
     False, False, False, None, False, False, None,
     False, False, False, None, False, False, None, 
     False, False, False, None, False, False, None, 
@@ -74,7 +81,16 @@ class Sound():
     False, False, False, None, False, False, None, 
     False, False, False, None]
 
-    blackNotesByIndex = [22,0,25,27,0,
+    hoveringBlackNote = [None, False, None, False, False, None,
+    False, False, False, None, False, False, None,
+    False, False, False, None, False, False, None, 
+    False, False, False, None, False, False, None, 
+    False, False, False, None, False, False, None, 
+    False, False, False, None, False, False, None, 
+    False, False, False, None, False, False, None, 
+    False, False, False, None]
+
+    blackNotesByIndex = [0, 22,0,25,27,0,
         30,32,34,0,37,39,0,
         42,44,46,0,49,51,0,
         54,56,58,0,61,63,0,
@@ -88,9 +104,11 @@ class Sound():
     def __init__(self):
         self.currentPiano = self.notesByIndex
         self.currentNotesPlaying = self.noteIndexPlaying
+        self.currentHoveringNote = self.hoveringNote
 
         self.currentBlackPiano = self.blackNotesByIndex
         self.currentBlackNotesPlaying = self.BlackNoteIndexPlaying
+        self.currentHoveringBlackNote = self.hoveringBlackNote
 
 
     
@@ -142,10 +160,11 @@ class Sound():
     def setCurrentPiano(self, start, end):
         self.currentPiano = self.notesByIndex[start:end]
         self.currentNotesPlaying = self.noteIndexPlaying[start:end]
+        self.currentHoveringNote = self.hoveringNote[start:end]
 
-        self.currentBlackPiano = self.blackNotesByIndex[start:end]
-        self.currentBlackNotesPlaying = self.BlackNoteIndexPlaying[start:end]
-
+        self.currentBlackPiano = self.blackNotesByIndex[start:end+1]
+        self.currentBlackNotesPlaying = self.BlackNoteIndexPlaying[start:end+1]
+        self.currentHoveringBlackNote = self.hoveringBlackNote[start:end+1]
 
 #Testing method
 def testSound1():

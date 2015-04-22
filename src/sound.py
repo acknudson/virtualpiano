@@ -5,7 +5,10 @@ import fluidsynth
 # --------------------------------------------------------------------------
 fs = fluidsynth.Synth()
 fs.start()
-sfid = fs.sfload("YAMAHA DX7Piano.SF2")
+sfid = fs.sfload("AJH_Piano.sf2")
+    #"jeuxdorgues.sf2")
+    #"Claudio_Piano.SF2")
+#AJH_Piano.sf2")#YAMAHA DX7Piano.SF2")
 fs.program_select(0, sfid, 0, 0)
 # --------------------------------------------------------------------------
 # --------------------------------------------------------------------------

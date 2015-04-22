@@ -10,7 +10,7 @@ DEPTH_THRESH = config.DEPTH_THRESH
 NOTE_WIDTH = config.NOTE_WIDTH
 X_MIN = config.X_MIN
 X_MAX = config.X_MAX
-PIANO_CENTER=len(snd.notesByIndex)/2 
+PIANO_CENTER=24 #center the keyboard at middle C #len(snd.notesByIndex)/2 
 padding = NOTE_WIDTH/10
 BLACK_NOTE_WIDTH = config.BLACK_NOTE_WIDTH
 

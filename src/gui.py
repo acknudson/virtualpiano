@@ -235,6 +235,7 @@ def update(position, notes, blackNotes, noteHovering, blackNoteHovering):
 		if V_THRESH-left[i].y+ BOTTOM_PIANO_TOP_LINE <= MIDDLE_LINE_HEIGHT: 
 			#make it lock to the middle line because the finger is too high
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, MIDDLE_LINE_HEIGHT)
+		# elif 
 		elif V_THRESH-left[i].y >= BOTTOM_PIANO_BOTTOM_LINE - BOTTOM_PIANO_TOP_LINE:
 			#make it lock to the bottom of the keys because the finger is too low
 			lhSpriteListBottom[i].update(left[i].x+screenCenterX, BOTTOM_PIANO_BOTTOM_LINE)

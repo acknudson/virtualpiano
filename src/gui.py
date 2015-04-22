@@ -230,16 +230,10 @@ lhSpriteListTop = [lthumb2, lindex2, lmiddle2, lring2, lpinky2]
 
 pygame.display.update() #this is crucial -- writes the values to the screen
 
-#TODO: Use the isPlayingList parameter once it's available from main.py
 def update(position, notes, blackNotes, noteHovering, blackNoteHovering): #, isPlayingList): #position is all the gesture info from the leap that is needed
 	left = position.left
 	right = position.right
 
-	#TODO: There is a new threshold variable for playing because of the black keys, so you'll need to change when the finger color is updated
-	#TODO: Fix the thresholding to lock the fingers in the screen/keyboard accurately
-	#TODO: Notes highlight when being played
-	#TODO: Fix the depth thresh -- make sure it's not inverting anything on the screen
-	#TODO: Redraw the vertical black lines on top of the polygons for the bottom keyboard so that we can see the outlines when notes are highlighted
 	for i in range(len(left)):
 		scale = 4
 		if V_THRESH-left[i].y+ PIANO_HEIGHT_BOTTOM <= MIDDLE_LINE_HEIGHT: #make it disappear because it is too high
@@ -285,7 +279,5 @@ def update(position, notes, blackNotes, noteHovering, blackNoteHovering): #, isP
 	rhSpritesTop.clear(screen, background)
 	rhSpritesTop.draw(screen)
 	pygame.draw.line(screen, BLACK, (0, MIDDLE_LINE_HEIGHT), (screenSize[0], MIDDLE_LINE_HEIGHT))
-	#TODO: Add this back in once you get the isPlayingList
-	#updateNotes(isPlayingList)
 	pygame.display.update() # redraw with *new* updates (similar to pygame.display.update())
 

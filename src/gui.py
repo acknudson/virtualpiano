@@ -79,7 +79,7 @@ def drawPianoBottom(notes, blackNotes, noteHovering, blackNoteHovering):
 
 		#draw black keys
 		if i < len(blackNotes) and blackNotes[i] != None:
-			top = BLACK_KEY_HEIGHT_BOTTOM
+			top = BLACK_KEY_HEIGHT_BOTTOM+10-BLACK_KEY_HEIGHT
 			left = blackKeyXOffset+X_MIN+screenCenterX+(i-1)*blackNoteWidth +BLACK_KEY_SPACE
 			bottom = BLACK_KEY_HEIGHT_BOTTOM+10
 			right = blackKeyXOffset+X_MIN+screenCenterX+(i)*blackNoteWidth -BLACK_KEY_SPACE
@@ -100,7 +100,7 @@ def drawPianoBottom(notes, blackNotes, noteHovering, blackNoteHovering):
 	for i,noteval in enumerate(range(X_MIN,X_MAX, NOTE_WIDTH)):
 		#draw black key outlines
 		if i < len(blackNotes) and blackNotes[i] != None:
-			top = BLACK_KEY_HEIGHT_BOTTOM
+			top = BLACK_KEY_HEIGHT_BOTTOM+10-BLACK_KEY_HEIGHT
 			left = blackKeyXOffset+X_MIN+screenCenterX+(i-1)*blackNoteWidth +BLACK_KEY_SPACE
 			bottom = BLACK_KEY_HEIGHT_BOTTOM+10
 			right = blackKeyXOffset+X_MIN+screenCenterX+(i)*blackNoteWidth -BLACK_KEY_SPACE
@@ -229,7 +229,7 @@ def update(position, notes, blackNotes, noteHovering, blackNoteHovering):
 	right = position.right
 	for i in range(len(left)):
 		# if i == 1:
-		# 	# print left[i].z
+		# 	print left[i].y
 		# 	print V_THRESH-left[i].y#+BOTTOM_PIANO_TOP_LINE
 		# 	print "bottomline", BOTTOM_PIANO_BOTTOM_LINE - BOTTOM_PIANO_TOP_LINE
 		if V_THRESH-left[i].y+ BOTTOM_PIANO_TOP_LINE <= MIDDLE_LINE_HEIGHT: 

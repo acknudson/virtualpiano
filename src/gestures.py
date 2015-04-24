@@ -28,9 +28,12 @@ class Gestures():
             # Get fingers
             for finger in hand.fingers:
                 bone = finger.bone(3)
+                adjust_y = 0
+                if finger.type() ==0:
+                    adjust_y = -10
   
                 x = bone.next_joint[0]
-                y = bone.next_joint[1]
+                y = bone.next_joint[1] + adjust_y
                 z = bone.next_joint[2]
                 self.position.update(handType, finger.type(), x,y,z)
         #if one or more hands are out of the leap range, set their values to be 

@@ -1,6 +1,6 @@
 #thresholds for determining whether a note was played
-V_THRESH = 120
-BLACK_V_THRESH = 130
+V_THRESH = 130
+BLACK_V_THRESH = 147
 DEPTH_THRESH = -100
 NOTE_WIDTH = 25
 X_MIN = -200

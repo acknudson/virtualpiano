@@ -30,7 +30,7 @@ class Gestures():
                 bone = finger.bone(3)
                 adjust_y = 0
                 if finger.type() ==0:
-                    adjust_y = -10
+                    adjust_y = -5
   
                 x = bone.next_joint[0]
                 y = bone.next_joint[1] + adjust_y

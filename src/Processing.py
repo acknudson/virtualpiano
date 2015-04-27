@@ -11,8 +11,9 @@ NOTE_WIDTH = config.NOTE_WIDTH
 X_MIN = config.X_MIN
 X_MAX = config.X_MAX
 PIANO_CENTER=24 #center the keyboard at middle C #len(snd.notesByIndex)/2 
-padding = NOTE_WIDTH/10
+padding = NOTE_WIDTH/5
 BLACK_NOTE_WIDTH = config.BLACK_NOTE_WIDTH
+FRONT_THRESH = config.FRONT_THRESH
 
 note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
 piano_size = len(note_cutoffs)
@@ -26,7 +27,7 @@ def position_to_note_played(pos):
 
 	for hand in pos.right, pos.left:
 		for finger in hand:
-			if finger.z > DEPTH_THRESH: #play white notes
+			if finger.z > DEPTH_THRESH and finger.z < FRONT_THRESH: #play white notes
 				if finger.y < V_THRESH:
 					if finger.x > X_MIN and finger.x < X_MAX:
 						for i in range(1,len(note_cutoffs)):
@@ -46,7 +47,7 @@ def position_to_note_played(pos):
 					stopPlaying(finger)
 					stopPlayingBlack(finger)
 
-			else: #play black notes
+			elif finger.z < DEPTH_THRESH: #play black notes
 				if finger.y < BLACK_V_THRESH:
 					if finger.x > X_MIN and finger.x < X_MAX:
 						for i in range(1,len(note_cutoffs)):
@@ -64,6 +65,9 @@ def position_to_note_played(pos):
 				else:
 					stopPlaying(finger)
 					stopPlayingBlack(finger)
+			else:
+				stopPlaying(finger)
+				stopPlayingBlack(finger)
 	return (snd.currentNotesPlaying, snd.currentBlackNotesPlaying, snd.currentHoveringNote, snd.currentHoveringBlackNote)
 
 

@@ -1,10 +1,14 @@
 import pygame
 import config
-#import math
+
+#GUI scaling variables
+scaleX = config.SCALE_X
+scaleY = config.SCALE_Y
+scaleZ = config.SCALE_Z
 
 # initialize pygame and the screen
 pygame.init()
-screen = pygame.display.set_mode((600, 300)) # width, height values
+screen = pygame.display.set_mode((int(600*scaleX), int(300*scaleY))) # width, height values
 screenSize = screen.get_size() # (width, height)
 pygame.display.set_caption("LeaPiano")
 screenX, screenY = screenSize[0:2]
@@ -15,21 +19,23 @@ screenCenterY = screenY/2.0
 #global variables
 V_THRESH = config.V_THRESH
 BLACK_V_THRESH = config.BLACK_V_THRESH
-NOTE_WIDTH = config.NOTE_WIDTH
-X_MIN = config.X_MIN
-X_MAX = config.X_MAX
+NOTE_WIDTH = int(config.NOTE_WIDTH * scaleX)
+X_MIN = int(config.X_MIN * scaleX)
+X_MAX = int(config.X_MAX * scaleX)
 MIDDLE_LINE_HEIGHT = screenY/2.0
-BOTTOM_PIANO_TOP_LINE = screenY - 60
-BOTTOM_PIANO_BOTTOM_LINE = BOTTOM_PIANO_TOP_LINE+20
-TOP_PIANO_BOTTOM_LINE = screenSize[1] - 175
-TOP_PIANO_TOP_LINE = TOP_PIANO_BOTTOM_LINE-100
-BLACK_KEY_HEIGHT_BOTTOM = BOTTOM_PIANO_TOP_LINE -10
-BLACK_KEY_HEIGHT = (BLACK_V_THRESH-V_THRESH)
-BLACK_KEY_HEIGHT_TOP = TOP_PIANO_BOTTOM_LINE - 50
+BOTTOM_PIANO_TOP_LINE = screenY - int(60*scaleY)
+BOTTOM_PIANO_BOTTOM_LINE = BOTTOM_PIANO_TOP_LINE + int(20*scaleY)
+TOP_PIANO_BOTTOM_LINE = screenSize[1] - int(175*scaleY)
+TOP_PIANO_TOP_LINE = TOP_PIANO_BOTTOM_LINE - int(100*scaleY)
+BLACK_KEY_HEIGHT_BOTTOM = BOTTOM_PIANO_TOP_LINE - int(10*scaleY)
+BLACK_KEY_HEIGHT = int((BLACK_V_THRESH-V_THRESH) * scaleY)
+BLACK_KEY_HEIGHT_TOP = TOP_PIANO_BOTTOM_LINE - int(50*scaleY)
 DEPTH_THRESH = config.DEPTH_THRESH
 Z_TOP_THRESH = -180
 Z_BOTTOM_THRESH = -20
 Z_BLACK_KEY_THRESH = -100
+
+
 
 # initialize colors
 RED   = (255,   0,   0)
@@ -45,7 +51,7 @@ class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite clas
 	#https://www.pygame.org/docs/ref/sprite.html
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
-		self.image = pygame.Surface([5,5]) #hardcoded the width and height values of the sprite's image
+		self.image = pygame.Surface([5*scaleX,5*scaleY]) #hardcoded the width and height values of the sprite's image
 		self.image.fill(BLACK) #hardcoded the color of the sprite
 		self.rect = self.image.get_rect()
 
@@ -63,18 +69,18 @@ def drawPianoBottom(notes, blackNotes, noteHovering, blackNoteHovering):
 	blackNoteWidth = ((X_MAX+screenCenterX) - (X_MIN+screenCenterX)) / (numNotes)
 	blackKeyXOffset = NOTE_WIDTH/2
 	BLACK_KEY_SPACE = blackNoteWidth/5
+	color = WHITE
 	for i,noteval in enumerate(range(X_MIN,X_MAX, NOTE_WIDTH)):
 		#draw white keys
 		top = BOTTOM_PIANO_TOP_LINE
 		left = X_MIN+screenCenterX+i*NOTE_WIDTH
 		bottom = BOTTOM_PIANO_BOTTOM_LINE
 		right = X_MIN+screenCenterX+(i+1)*NOTE_WIDTH
-		if notes[i]:
-			color = BLUE 
-		elif noteHovering[i]:
-			color = LIGHT_GRAY
-		else:
-			color = WHITE
+		if i < numNotes:
+			if notes[i]:
+				color = BLUE 
+			elif noteHovering[i]:
+				color = LIGHT_GRAY
 		pygame.draw.polygon(screen, color, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
 
 		#draw black keys
@@ -115,18 +121,18 @@ def drawPianoTop(notes, blackNotes, noteHovering, blackNoteHovering):
 	blackNoteWidth = ((X_MAX+screenCenterX) - (X_MIN+screenCenterX)) / (numNotes)
 	blackKeyXOffset = NOTE_WIDTH/2
 	BLACK_KEY_SPACE = blackNoteWidth/5
+	color = WHITE
 	for i,noteval in enumerate(range(X_MIN,X_MAX, NOTE_WIDTH)):
 		#draw white keys
 		whiteLeft = X_MIN+screenCenterX+i*NOTE_WIDTH
 		whiteTop = TOP_PIANO_TOP_LINE
 		whiteRight = X_MIN+screenCenterX+i*NOTE_WIDTH + NOTE_WIDTH
 		whiteBottom = TOP_PIANO_BOTTOM_LINE
-		if notes[i]:
-			color = BLUE 
-		elif noteHovering[i]:
-			color = LIGHT_GRAY
-		else:
-			color = WHITE
+		if i < numNotes:
+			if notes[i]:
+				color = BLUE 
+			elif noteHovering[i]:
+				color = LIGHT_GRAY
 		pygame.draw.polygon(screen, color, [[whiteLeft,whiteTop], [whiteRight, whiteTop], [whiteRight, whiteBottom], [whiteLeft,whiteBottom]], 0)
 	
 	#draw outlines for the white keys
@@ -232,54 +238,55 @@ def update(position, notes, blackNotes, noteHovering, blackNoteHovering):
 		# 	print left[i].y
 		# 	print V_THRESH-left[i].y#+BOTTOM_PIANO_TOP_LINE
 		# 	print "bottomline", BOTTOM_PIANO_BOTTOM_LINE - BOTTOM_PIANO_TOP_LINE
-		if V_THRESH-left[i].y+ BOTTOM_PIANO_TOP_LINE <= MIDDLE_LINE_HEIGHT: 
+		#Bottom Piano Finger Position Dots
+		if V_THRESH-left[i].y*scaleY+ BOTTOM_PIANO_TOP_LINE <= MIDDLE_LINE_HEIGHT: 
 			#make it lock to the middle line because the finger is too high
-			lhSpriteListBottom[i].update(left[i].x+screenCenterX, MIDDLE_LINE_HEIGHT)
-		elif V_THRESH-left[i].y >= BOTTOM_PIANO_BOTTOM_LINE - BOTTOM_PIANO_TOP_LINE:
-			if left[i].z <= Z_BLACK_KEY_THRESH:
+			lhSpriteListBottom[i].update(left[i].x*scaleX+screenCenterX, MIDDLE_LINE_HEIGHT)
+		elif V_THRESH-left[i].y*scaleY >= BOTTOM_PIANO_BOTTOM_LINE - BOTTOM_PIANO_TOP_LINE:
+			if left[i].z*scaleZ <= Z_BLACK_KEY_THRESH:
 				#lock on a black key if the finger is playing a black key
-				lhSpriteListBottom[i].update(left[i].x+screenCenterX, BOTTOM_PIANO_TOP_LINE-5) # -5 accounts for the size of the sprite
+				lhSpriteListBottom[i].update(left[i].x*scaleX+screenCenterX, BOTTOM_PIANO_TOP_LINE-5) # -5 accounts for the size of the sprite
 			else:
 				#make it lock to the bottom of the keys because the finger is too low
-				lhSpriteListBottom[i].update(left[i].x+screenCenterX, BOTTOM_PIANO_BOTTOM_LINE-5) # -5 accounts for the size of the sprite
+				lhSpriteListBottom[i].update(left[i].x*scaleX+screenCenterX, BOTTOM_PIANO_BOTTOM_LINE-5) # -5 accounts for the size of the sprite
 		else:
-			lhSpriteListBottom[i].update(left[i].x+screenCenterX, V_THRESH-left[i].y + BOTTOM_PIANO_TOP_LINE)
+			lhSpriteListBottom[i].update(left[i].x*scaleX+screenCenterX, V_THRESH-left[i].y*scaleY + BOTTOM_PIANO_TOP_LINE)
 		
-		#top piano finger pos dots
+		#Top Piano Finger Position Dots
 		#if BLACK_KEY_HEIGHT_TOP+left[i].z > TOP_PIANO_BOTTOM_LINE:
-		if left[i].z <= Z_TOP_THRESH:
+		if left[i].z*scaleZ <= Z_TOP_THRESH:
 			#lock sprites to the top of the top piano's screen section
-			lhSpriteListTop[i].update(left[i].x+screenCenterX, TOP_PIANO_TOP_LINE) 
-		elif left[i].z >= Z_BOTTOM_THRESH:
+			lhSpriteListTop[i].update(left[i].x*scaleX+screenCenterX, TOP_PIANO_TOP_LINE) 
+		elif left[i].z*scaleZ >= Z_BOTTOM_THRESH:
 			#lock sprites to bottom of the top piano's screen section
-			lhSpriteListTop[i].update(left[i].x+screenCenterX, TOP_PIANO_BOTTOM_LINE)
+			lhSpriteListTop[i].update(left[i].x*scaleX+screenCenterX, TOP_PIANO_BOTTOM_LINE)
 		else:
 			depth_scale = abs(TOP_PIANO_TOP_LINE-TOP_PIANO_BOTTOM_LINE) /200.0
-			lhSpriteListTop[i].update(left[i].x+screenCenterX, TOP_PIANO_BOTTOM_LINE+left[i].z*depth_scale)
+			lhSpriteListTop[i].update(left[i].x*scaleX+screenCenterX, TOP_PIANO_BOTTOM_LINE+left[i].z*depth_scale*scaleZ)
 
 	for i in range(len(right)):
-		if V_THRESH-right[i].y + BOTTOM_PIANO_TOP_LINE <= MIDDLE_LINE_HEIGHT:
+		if V_THRESH-right[i].y*scaleY + BOTTOM_PIANO_TOP_LINE <= MIDDLE_LINE_HEIGHT:
 			# print V_THRESH-right[i].y + BOTTOM_PIANO_TOP_LINE 
 			#make it lock to the top of the bottom piano's screen because the finger is too high
-			rhSpriteListBottom[i].update(right[i].x+screenCenterX, MIDDLE_LINE_HEIGHT)
-		elif V_THRESH-right[i].y >= BOTTOM_PIANO_BOTTOM_LINE - BOTTOM_PIANO_TOP_LINE:
-			if right[i].z <= Z_BLACK_KEY_THRESH:
+			rhSpriteListBottom[i].update(right[i].x*scaleX+screenCenterX, MIDDLE_LINE_HEIGHT)
+		elif V_THRESH-right[i].y*scaleY >= BOTTOM_PIANO_BOTTOM_LINE - BOTTOM_PIANO_TOP_LINE:
+			if right[i].z*scaleZ <= Z_BLACK_KEY_THRESH:
 				#lock on a black key if the finger is playing a black key
-				rhSpriteListBottom[i].update(right[i].x+screenCenterX, BOTTOM_PIANO_TOP_LINE-5) # -5 accounts for the size of the sprite
+				rhSpriteListBottom[i].update(right[i].x*scaleX+screenCenterX, BOTTOM_PIANO_TOP_LINE-5) # -5 accounts for the size of the sprite
 			#make it lock to the bottom of the keys because the finger is too low
 			else:
-				rhSpriteListBottom[i].update(right[i].x+screenCenterX, BOTTOM_PIANO_BOTTOM_LINE-5) # -5 accounts for the size of the sprite
+				rhSpriteListBottom[i].update(right[i].x*scaleX+screenCenterX, BOTTOM_PIANO_BOTTOM_LINE-5) # -5 accounts for the size of the sprite
 		else:
-			rhSpriteListBottom[i].update(right[i].x+screenCenterX, V_THRESH-right[i].y + BOTTOM_PIANO_TOP_LINE)
+			rhSpriteListBottom[i].update(right[i].x*scaleX+screenCenterX, V_THRESH-right[i].y*scaleY + BOTTOM_PIANO_TOP_LINE)
 		
 		#top piano hands
-		if right[i].z <= Z_TOP_THRESH: #lock sprites to bottom of screen section
-			rhSpriteListTop[i].update(right[i].x+screenCenterX, TOP_PIANO_TOP_LINE)
-		elif right[i].z >= Z_BOTTOM_THRESH:
-			rhSpriteListTop[i].update(right[i].x+screenCenterX, TOP_PIANO_BOTTOM_LINE)
+		if right[i].z*scaleZ <= Z_TOP_THRESH: #lock sprites to bottom of screen section
+			rhSpriteListTop[i].update(right[i].x*scaleX+screenCenterX, TOP_PIANO_TOP_LINE)
+		elif right[i].z*scaleZ >= Z_BOTTOM_THRESH:
+			rhSpriteListTop[i].update(right[i].x*scaleX+screenCenterX, TOP_PIANO_BOTTOM_LINE)
 		else:
 			depth_scale = abs(TOP_PIANO_TOP_LINE-TOP_PIANO_BOTTOM_LINE) /200.0
-			rhSpriteListTop[i].update(right[i].x+screenCenterX, TOP_PIANO_BOTTOM_LINE+right[i].z*depth_scale)
+			rhSpriteListTop[i].update(right[i].x*scaleX+screenCenterX, TOP_PIANO_BOTTOM_LINE+right[i].z*depth_scale*scaleZ)
 		
 
 	drawPianoBottom(notes, blackNotes, noteHovering, blackNoteHovering)

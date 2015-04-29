@@ -108,6 +108,13 @@ def drawPianoBottom(notes, blackNotes, noteHovering, blackNoteHovering):
 				color = BLACK
 			pygame.draw.polygon(screen, color, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
 			pygame.draw.polygon(screen, BLACK_KEY_OUTLINE_COLOR, [[left,top], [right, top], [right, bottom], [left,bottom]], 1) #key outline
+
+	#outline bottom piano
+	top = BOTTOM_PIANO_TOP_LINE
+	bottom = BOTTOM_PIANO_BOTTOM_LINE
+	left = X_MIN+screenCenterX
+	right = X_MAX+screenCenterX
+	pygame.draw.polygon(screen, BLACK, [[left,top], [right, top], [right, bottom], [left,bottom]], 1)
 	
 
 def drawPianoTop(notes, blackNotes, noteHovering, blackNoteHovering):
@@ -149,6 +156,14 @@ def drawPianoTop(notes, blackNotes, noteHovering, blackNoteHovering):
 				color = BLACK
 			pygame.draw.polygon(screen, color, [[left,top], [right, top], [right, bottom], [left,bottom]], 0)
 			pygame.draw.polygon(screen, BLACK_KEY_OUTLINE_COLOR, [[left,top], [right, top], [right, bottom], [left,bottom]], 1) #outline keys
+
+	#outline top piano
+	top = TOP_PIANO_TOP_LINE
+	bottom = TOP_PIANO_BOTTOM_LINE
+	left = X_MIN+screenCenterX
+	right = X_MAX+screenCenterX
+	pygame.draw.polygon(screen, BLACK, [[left,top], [right, top], [right, bottom], [left,bottom]], 1)
+
 
 def updateFingers(position):
 	hands = [position.left, position.right]
@@ -255,6 +270,6 @@ def update(position, notes, blackNotes, noteHovering, blackNoteHovering):
 	rhSpritesTop.clear(screen, background)
 	rhSpritesTop.draw(screen)
 
-	pygame.draw.line(screen, WHITE, (0, MIDDLE_LINE_HEIGHT), (screenX, MIDDLE_LINE_HEIGHT))
+	pygame.draw.line(screen, BLACK, (0, MIDDLE_LINE_HEIGHT), (screenX, MIDDLE_LINE_HEIGHT))
 	pygame.display.update() # redraw everything on the screen
 

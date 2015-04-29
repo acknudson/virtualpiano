@@ -1,5 +1,5 @@
 #thresholds for determining whether a note was played
-V_THRESH = 127
+V_THRESH = 122
 BLACK_V_THRESH = 147
 DEPTH_THRESH = -100
 NOTE_WIDTH = 25
@@ -9,6 +9,6 @@ BLACK_NOTE_WIDTH = 20
 FRONT_THRESH = -20
 
 #GUI Constants
-SCALE_X = 1.5
-SCALE_Y = 1.5
-SCALE_Z = 1.5
+SCALE_X = 3
+SCALE_Y = 3
+SCALE_Y_BOTTOM = 1.5

@@ -32,10 +32,12 @@ def main():
                     y,z = g.getIndexFingerYZ()
                     gui.setBlackThresh(y,z)
                     p.setBlackThresh(y,z)
+                    print "pressed q"
                 elif event.key == K_w: #set white key thresholds from piano table
                     y,z = g.getIndexFingerYZ()
                     gui.setWhiteThresh(y,z)
                     p.setWhiteThresh(y,z)
+                    print "pressed w"
 
 
     pygame.quit()

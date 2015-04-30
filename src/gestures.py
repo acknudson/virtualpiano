@@ -54,6 +54,7 @@ class Gestures():
                 self.position.update(handType, finger_index, x,y,z)
 
     def getIndexFingerYZ(self):
+        print self.position.right[1].y, self.position.right[1].z
         return self.position.right[1].y, self.position.right[1].z
 
 

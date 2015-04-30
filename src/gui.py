@@ -33,6 +33,8 @@ FRONT_THRESH = int(config.FRONT_THRESH*scaleY) #front z cutoff for white keys
 
 # for calibrating where the white keys' y,z coordinates are on the piano table
 def setWhiteThresh(y,z):
+	global V_THRESH
+	print V_THRESH
 	V_THRESH = int(y * scaleYBottom)
 	FRONT_THRESH = int(z * scaleY)
 
@@ -42,17 +44,17 @@ def setBlackThresh(y,z):
 	DEPTH_THRESH = int(z * scaleY)
 
 #bottom piano variables
-BLACK_KEY_HEIGHT = BLACK_V_THRESH-V_THRESH
-WHITE_KEY_HEIGHT = BLACK_KEY_HEIGHT*1.25
-BOTTOM_PIANO_TOP_LINE = MIDDLE_LINE_HEIGHT*3/2
-BOTTOM_PIANO_BOTTOM_LINE = MIDDLE_LINE_HEIGHT*3/2 + WHITE_KEY_HEIGHT
+BLACK_KEY_HEIGHT = BLACK_V_THRESH-V_THRESH #this is the length of the black key
+WHITE_KEY_HEIGHT = BLACK_KEY_HEIGHT*1.25 #this is the length of the white key
+BOTTOM_PIANO_TOP_LINE = MIDDLE_LINE_HEIGHT*3/2 #this is the top of the white keys
+BOTTOM_PIANO_BOTTOM_LINE = MIDDLE_LINE_HEIGHT*3/2 + WHITE_KEY_HEIGHT #this is the bottom of the white keys
 
 #top piano variables
-TOP_PIANO_LENGTH = int(100*scaleY)
-TOP_PIANO_BOTTOM_LINE = MIDDLE_LINE_HEIGHT/2 + TOP_PIANO_LENGTH/2
-TOP_PIANO_TOP_LINE = MIDDLE_LINE_HEIGHT/2 - TOP_PIANO_LENGTH/2
-TOP_PIANO_BLACK_KEY_LENGTH = TOP_PIANO_LENGTH*1/2
-TOP_PIANO_BLACK_KEY_BOTTOM = TOP_PIANO_BOTTOM_LINE - TOP_PIANO_BLACK_KEY_LENGTH#(FRONT_THRESH-DEPTH_THRESH)
+TOP_PIANO_LENGTH = int(100*scaleY) #length of the piano
+TOP_PIANO_BOTTOM_LINE = MIDDLE_LINE_HEIGHT/2 + TOP_PIANO_LENGTH/2 #this is the bottom of the piano
+TOP_PIANO_TOP_LINE = MIDDLE_LINE_HEIGHT/2 - TOP_PIANO_LENGTH/2 #top of the piano
+TOP_PIANO_BLACK_KEY_LENGTH = TOP_PIANO_LENGTH*1/2 #length of the black keys
+TOP_PIANO_BLACK_KEY_BOTTOM = TOP_PIANO_BOTTOM_LINE - TOP_PIANO_BLACK_KEY_LENGTH #bottom of the black keys (top of the black keys is the same as the top of the white keys)
 
 
 SPRITE_SIZE = 5*scaleX
@@ -71,8 +73,7 @@ BLACK_KEY_OUTLINE_COLOR = DARK_GRAY
 WHITE_KEY_OUTLINE_COLOR = DARK_GRAY
 
 
-class fingerSprite(pygame.sprite.Sprite): #may want to use the dirty sprite class for better rendering? 
-	#https://www.pygame.org/docs/ref/sprite.html
+class fingerSprite(pygame.sprite.Sprite): 
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = pygame.Surface([SPRITE_SIZE,SPRITE_SIZE]) #hardcoded the width and height values of the sprite's image
@@ -184,13 +185,14 @@ def updateFingers(position):
 	for h,hand in enumerate(hands):
 		for i in range(len(hand)):			
 			#draw top piano fingers
+			#TODO: this is probably where the bug is (in depth_scale or top_y)
 			depth_scale = (TOP_PIANO_LENGTH - TOP_PIANO_BLACK_KEY_LENGTH*1.0)/(FRONT_THRESH-DEPTH_THRESH)
 			top_x = hand[i].x*scaleX+screenCenterX
 			top_y = hand[i].z*depth_scale*scaleY+TOP_PIANO_BOTTOM_LINE-FRONT_THRESH
 			if top_y > MIDDLE_LINE_HEIGHT:
-				top_y = MIDDLE_LINE_HEIGHT-SPRITE_SIZE
+				top_y = MIDDLE_LINE_HEIGHT-SPRITE_SIZE #snap to bottom of top half
 			elif top_y < 0:
-				top_y = 0
+				top_y = 0 #snap to top of screen
 			spriteGroups[1][h][i].update(top_x, top_y)
 
 
@@ -198,13 +200,13 @@ def updateFingers(position):
 			bottom_x = hand[i].x*scaleX+screenCenterX
 			bottom_y = V_THRESH-hand[i].y*scaleYBottom + BOTTOM_PIANO_TOP_LINE
 			if bottom_y < MIDDLE_LINE_HEIGHT:
-				bottom_y = MIDDLE_LINE_HEIGHT+ SPRITE_SIZE
+				bottom_y = MIDDLE_LINE_HEIGHT+ SPRITE_SIZE #snap finger to top of bototm half
 			elif bottom_y > screenY:
-				bottom_y = screenY - SPRITE_SIZE
+				bottom_y = screenY - SPRITE_SIZE #snap finger to the bottom of the screen
 			else:
 				if top_y < TOP_PIANO_BLACK_KEY_BOTTOM: #if finger is above black keys
 					if bottom_y > BOTTOM_PIANO_TOP_LINE: #if finger is below end of black keys
-						bottom_y = BOTTOM_PIANO_TOP_LINE- SPRITE_SIZE
+						bottom_y = BOTTOM_PIANO_TOP_LINE- SPRITE_SIZE #snap finger to the bottom of black keys
 
 			spriteGroups[0][h][i].update(bottom_x, bottom_y)
 	
@@ -267,11 +269,10 @@ pygame.display.update() #this is crucial -- writes the values to the screen
 #noteHovering is a list of booleans that indicates if the white key at an index is being hovered over by a finger
 #blackNoteHovering is a list of booleans that indicates if the black key at an index is being hovered over by a finger
 def update(position, notes, blackNotes, noteHovering, blackNoteHovering): 
-	updateFingers(position)
-		
-
 	drawPianoBottom(notes, blackNotes, noteHovering, blackNoteHovering)
 	drawPianoTop(notes, blackNotes, noteHovering, blackNoteHovering)
+
+	updateFingers(position)
 
 	rhSpritesBottom.clear(screen, background)
 	rhSpritesBottom.draw(screen)

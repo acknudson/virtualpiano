@@ -1,5 +1,5 @@
 import pygame
-from pygame.locals import QUIT, KEYDOWN, K_RETURN
+from pygame.locals import QUIT, KEYDOWN, K_RETURN, K_q, K_w
 import os, sys, inspect, thread, time
 
 
@@ -25,8 +25,19 @@ def main():
             if event.type == pygame.QUIT:
                running = False
             # quit if Enter is pressed
-            elif event.type == KEYDOWN and event.key == K_RETURN:
-                running = False
+            elif event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    running = False
+                elif event.key == K_q: #set black key thresholds from piano table
+                    y,z = g.getIndexFingerYZ()
+                    gui.setBlackThresh(y,z)
+                    p.setBlackThresh(y,z)
+                elif event.key == K_w: #set white key thresholds from piano table
+                    y,z = g.getIndexFingerYZ()
+                    gui.setWhiteThresh(y,z)
+                    p.setWhiteThresh(y,z)
+
+
     pygame.quit()
     sys.exit()    
 

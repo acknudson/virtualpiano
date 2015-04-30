@@ -6,9 +6,14 @@ scaleX = config.SCALE_X
 scaleY = config.SCALE_Y
 scaleYBottom = config.SCALE_Y_BOTTOM
 
+
 # initialize pygame and the screen
 pygame.init()
-screen = pygame.display.set_mode((1400, 800)) # width, height values
+infoObject = pygame.display.Info()
+screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h)) #sets the width and height to be full screen based on the monitor
+# screen = pygame.display.set_mode((1275, 750)) # width, height values
+#LEE SCREEN: 1400,800
+#AUBREY FULL SCREEN: 1280, 800
 screenSize = screen.get_size() # (width, height)
 pygame.display.set_caption("LeaPiano")
 screenX, screenY = screenSize[0:2]
@@ -26,6 +31,16 @@ MIDDLE_LINE_HEIGHT = screenY/2.0
 DEPTH_THRESH = int(config.DEPTH_THRESH*scaleY) #cutoff between black and white keys
 FRONT_THRESH = int(config.FRONT_THRESH*scaleY) #front z cutoff for white keys
 
+# for calibrating where the white keys' y,z coordinates are on the piano table
+def setWhiteThresh(y,z):
+	V_THRESH = int(y * scaleYBottom)
+	FRONT_THRESH = int(z * scaleY)
+
+# for calibrating where the black keys' y,z coordinates are on the piano table
+def setBlackThresh(y,z):
+	BLACK_V_THRESH = int(y * scaleYBottom)
+	DEPTH_THRESH = int(z * scaleY)
+
 #bottom piano variables
 BLACK_KEY_HEIGHT = BLACK_V_THRESH-V_THRESH
 WHITE_KEY_HEIGHT = BLACK_KEY_HEIGHT*1.25
@@ -41,8 +56,6 @@ TOP_PIANO_BLACK_KEY_BOTTOM = TOP_PIANO_BOTTOM_LINE - TOP_PIANO_BLACK_KEY_LENGTH#
 
 
 SPRITE_SIZE = 5*scaleX
-
-
 
 
 # initialize colors

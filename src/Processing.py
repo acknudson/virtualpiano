@@ -15,6 +15,16 @@ padding = NOTE_WIDTH/5
 BLACK_NOTE_WIDTH = config.BLACK_NOTE_WIDTH
 FRONT_THRESH = config.FRONT_THRESH
 
+# for calibrating where the white keys' y,z coordinates are on the piano table
+def setWhiteThresh(y,z):
+	V_THRESH = int(y)
+	FRONT_THRESH = int(z)
+
+# for calibrating where the black keys' y,z coordinates are on the piano table
+def setBlackThresh(y,z):
+	BLACK_V_THRESH = int(y)
+	DEPTH_THRESH = int(z)
+
 note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
 piano_size = len(note_cutoffs)
 snd.setCurrentPiano(PIANO_CENTER-piano_size/2, PIANO_CENTER+piano_size/2)

@@ -30,14 +30,18 @@ def main():
                     running = False
                 elif event.key == K_q: #set black key thresholds from piano table
                     y,z = g.getIndexFingerYZ()
+                    # print y,z
                     gui.setBlackThresh(y,z)
                     p.setBlackThresh(y,z)
-                    print "pressed q"
+                    # print "pressed q"
+                    # print "set black thresholds"
                 elif event.key == K_w: #set white key thresholds from piano table
                     y,z = g.getIndexFingerYZ()
+                    # print y,z
                     gui.setWhiteThresh(y,z)
                     p.setWhiteThresh(y,z)
-                    print "pressed w"
+                    # print "pressed w"
+                    # print "set white thresholds"
 
 
     pygame.quit()

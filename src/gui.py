@@ -187,9 +187,9 @@ def updateFingers(position):
 			#draw top piano fingers
 			#TODO: this is probably where the bug is (in depth_scale or top_y)
 			depth_scale = (TOP_PIANO_BOTTOM_LINE - TOP_PIANO_BLACK_KEY_BOTTOM *1.0)/(FRONT_THRESH-DEPTH_THRESH)
-			b = (TOP_PIANO_BOTTOM_LINE*DEPTH_THRESH - FRONT_THRESH* TOP_PIANO_BLACK_KEY_BOTTOM*1.0)/(DEPTH_THRESH-FRONT_THRESH )
+			shift = (TOP_PIANO_BOTTOM_LINE*DEPTH_THRESH - FRONT_THRESH* TOP_PIANO_BLACK_KEY_BOTTOM*1.0)/(DEPTH_THRESH-FRONT_THRESH )
 			top_x = hand[i].x*scaleX+screenCenterX
-			top_y = hand[i].z*scaleY*depth_scale+b
+			top_y = hand[i].z*scaleY*depth_scale+shift
 			if top_y > MIDDLE_LINE_HEIGHT:
 				top_y = MIDDLE_LINE_HEIGHT-SPRITE_SIZE #snap to bottom of top half
 			elif top_y < 0:

@@ -185,7 +185,6 @@ def updateFingers(position):
 	for h,hand in enumerate(hands):
 		for i in range(len(hand)):			
 			#draw top piano fingers
-			#TODO: this is probably where the bug is (in depth_scale or top_y)
 			depth_scale = (TOP_PIANO_BOTTOM_LINE - TOP_PIANO_BLACK_KEY_BOTTOM *1.0)/(FRONT_THRESH-DEPTH_THRESH)
 			shift = (TOP_PIANO_BOTTOM_LINE*DEPTH_THRESH - FRONT_THRESH* TOP_PIANO_BLACK_KEY_BOTTOM*1.0)/(DEPTH_THRESH-FRONT_THRESH )
 			top_x = hand[i].x*scaleX+screenCenterX

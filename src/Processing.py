@@ -17,11 +17,15 @@ FRONT_THRESH = config.FRONT_THRESH
 
 # for calibrating where the white keys' y,z coordinates are on the piano table
 def setWhiteThresh(y,z):
+	global V_THRESH
+	global FRONT_THRESH
 	V_THRESH = int(y)
 	FRONT_THRESH = int(z)
 
 # for calibrating where the black keys' y,z coordinates are on the piano table
 def setBlackThresh(y,z):
+	global BLACK_V_THRESH
+	global DEPTH_THRESH
 	BLACK_V_THRESH = int(y)
 	DEPTH_THRESH = int(z)
 

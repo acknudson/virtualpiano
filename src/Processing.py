@@ -11,23 +11,24 @@ NOTE_WIDTH = config.NOTE_WIDTH
 X_MIN = config.X_MIN
 X_MAX = config.X_MAX
 PIANO_CENTER=24 #center the keyboard at middle C #len(snd.notesByIndex)/2 
-padding = NOTE_WIDTH/5
+padding = NOTE_WIDTH/7
 BLACK_NOTE_WIDTH = config.BLACK_NOTE_WIDTH
 FRONT_THRESH = config.FRONT_THRESH
 
 # for calibrating where the white keys' y,z coordinates are on the piano table
+val = 2
 def setWhiteThresh(y,z):
 	global V_THRESH
 	global FRONT_THRESH
-	V_THRESH = int(y)
-	FRONT_THRESH = int(z)
+	V_THRESH = int(y)+val
+	FRONT_THRESH = int(z)+val
 
 # for calibrating where the black keys' y,z coordinates are on the piano table
 def setBlackThresh(y,z):
 	global BLACK_V_THRESH
 	global DEPTH_THRESH
-	BLACK_V_THRESH = int(y)
-	DEPTH_THRESH = int(z)
+	BLACK_V_THRESH = int(y)+val
+	DEPTH_THRESH = int(z)+val
 
 note_cutoffs = range(X_MIN,X_MAX+NOTE_WIDTH, NOTE_WIDTH)
 piano_size = len(note_cutoffs)

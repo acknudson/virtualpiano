@@ -32,18 +32,19 @@ DEPTH_THRESH = int(config.DEPTH_THRESH*scaleY) #cutoff between black and white k
 FRONT_THRESH = int(config.FRONT_THRESH*scaleY) #front z cutoff for white keys
 
 # for calibrating where the white keys' y,z coordinates are on the piano table
+val = 2
 def setWhiteThresh(y,z):
 	global V_THRESH
 	global FRONT_THRESH
-	V_THRESH = int(y * scaleYBottom)
-	FRONT_THRESH = int(z * scaleY)
+	V_THRESH = int((y+val) * scaleYBottom)
+	FRONT_THRESH = int((z+val) * scaleY)
 
 # for calibrating where the black keys' y,z coordinates are on the piano table
 def setBlackThresh(y,z):
 	global BLACK_V_THRESH
 	global DEPTH_THRESH
-	BLACK_V_THRESH = int(y * scaleYBottom)
-	DEPTH_THRESH = int(z * scaleY)
+	BLACK_V_THRESH = int((y+val) * scaleYBottom)
+	DEPTH_THRESH = int((z+val) * scaleY)
 
 #bottom piano variables
 BLACK_KEY_HEIGHT = BLACK_V_THRESH-V_THRESH #this is the length of the black key

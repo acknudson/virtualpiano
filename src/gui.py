@@ -32,7 +32,7 @@ DEPTH_THRESH = int(config.DEPTH_THRESH*scaleY) #cutoff between black and white k
 FRONT_THRESH = int(config.FRONT_THRESH*scaleY) #front z cutoff for white keys
 
 # for calibrating where the white keys' y,z coordinates are on the piano table
-val = 2
+val = config.ADJUST_V_THRESH
 def setWhiteThresh(y,z):
 	global V_THRESH
 	global FRONT_THRESH

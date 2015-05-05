@@ -29,8 +29,10 @@ class Gestures():
             for finger in hand.fingers:
                 bone = finger.bone(3)
                 adjust_y = 0
-                if finger.type() ==0:
+                if finger.type() ==0: #adjust thumb
                     adjust_y = -5
+                if finger.type() ==2: #adjust middle
+                    adjust_y = -1
   
                 x = bone.next_joint[0]
                 y = bone.next_joint[1] + adjust_y

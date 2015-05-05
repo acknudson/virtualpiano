@@ -16,7 +16,7 @@ BLACK_NOTE_WIDTH = config.BLACK_NOTE_WIDTH
 FRONT_THRESH = config.FRONT_THRESH
 
 # for calibrating where the white keys' y,z coordinates are on the piano table
-val = 2
+val = config.ADJUST_V_THRESH
 def setWhiteThresh(y,z):
 	global V_THRESH
 	global FRONT_THRESH
@@ -42,6 +42,10 @@ def position_to_note_played(pos):
 
 	for hand in pos.right, pos.left:
 		for finger in hand:
+			if finger.index == 2:
+				print "middle", finger.y
+			elif finger.index == 1:
+				print "index", finger.y
 			if finger.z > DEPTH_THRESH and finger.z < FRONT_THRESH: #play white notes
 				if finger.y < V_THRESH:
 					if finger.x > X_MIN and finger.x < X_MAX:

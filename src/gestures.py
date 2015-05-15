@@ -19,7 +19,6 @@ class Gestures():
     def leapControl(self):
         finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
         bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
-        state_names = ['STATE_INVALID', 'STATE_START', 'STATE_UPDATE', 'STATE_END']
 
         frame = self.controller.frame()
         for hand in frame.hands:
@@ -56,7 +55,6 @@ class Gestures():
                 self.position.update(handType, finger_index, x,y,z)
 
     def getIndexFingerYZ(self):
-        print self.position.right[1].y, self.position.right[1].z
         return self.position.right[1].y, self.position.right[1].z
 
 

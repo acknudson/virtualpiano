@@ -1,8 +1,11 @@
+LeaPiano
+Aubrey Colter and Lee Gross
+
 Must have pygame, pyfluidsynth, and Leap SDK installed.
 
 Plug in the Leap, make sure it can track hands (we use the visualizer).
 
-To run the LeaPiano, in the terminal navigate to the Virtual Piano/src project folder and type python main.py
+To run the LeaPiano, in the terminal navigate to the leapiano/src project folder and type python main.py
 
 A full-screen piano GUI should appear. Check that finger dots appear on the screen and are tracking.
 
